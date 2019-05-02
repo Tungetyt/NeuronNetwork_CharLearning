@@ -12,9 +12,9 @@ namespace NeuronNetwork_CharLearning.Models
     {
         public const double alfa = 0.5; //learningCoefficient
         public const double lambda = 1.0;
-        public double errorThreshold = 0.1;
+        public double errorThreshold;
         public const int maxEra = 500;
-        const bool isUnipolar = true;
+        const bool isUsingUnipolarFun = true;
         public int MaxInputNeurons { get; set; } //Zastosowac tu wzor, 17
         public const int maxOutputNeurons = 10;
         public double[] EraErrors { get; set; }
@@ -26,10 +26,10 @@ namespace NeuronNetwork_CharLearning.Models
         {
             this.InputsDatas = InputsDatas;
 
-            if (isUnipolar)
+            if (isUsingUnipolarFun)
             {
                 errorThreshold = 0.1;
-                MaxInputNeurons = 6;
+                MaxInputNeurons = 5; //5??
             }
             else
             {
@@ -130,8 +130,6 @@ namespace NeuronNetwork_CharLearning.Models
                     InputsDatas[randIdIt] = temp;
                 }
 
-                Console.WriteLine($"Errors<{eraIt}>: {EraErrors[eraIt]}");
-
                 //Wylicz blad sredni i ustal czy przerwac
                 double avgError = 0.0;
                 for(int i = 1; i < eraIt + 1; i++)
@@ -187,7 +185,7 @@ namespace NeuronNetwork_CharLearning.Models
 
         static double CalcSigmoidalFun(double x)
         {
-            if(isUnipolar)
+            if(isUsingUnipolarFun)
                 return 1 / (1 + Math.Pow(Math.E, -lambda * x));
 
             return 2 / (1 + Math.Pow(Math.E, -lambda * x)) - 1;
@@ -195,7 +193,7 @@ namespace NeuronNetwork_CharLearning.Models
 
         static double CalcSigmoidalFunDerivative(double fx)
         {
-            if(isUnipolar)
+            if(isUsingUnipolarFun)
                 return lambda * fx * (1 - fx);
 
             return lambda * (1 - fx * fx) / 2;

@@ -6,60 +6,56 @@
         xmlns:local="clr-namespace:NeuronNetwork_CharLearning"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="CharLerning" Height="500" Width="1000" d:DesignWidth="330.65" d:DesignHeight="360.476">
+        Title="CharLerning" Height="500" Width="500">
     <!--<Window.DataContext>
         <local:MainViewModel/>
     </Window.DataContext>-->
-    <DockPanel>
-        <Menu DockPanel.Dock="Top" Background="White">
-            <Label HorizontalAlignment="Left" Margin="0 0 0 0" >File</Label>
-        </Menu>
-        <Grid Name="userCharsDrawingGrid" Margin="10 10 10 5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="100"/>
-            </Grid.RowDefinitions>
-            <Button Name="learn_Btn" IsEnabled="False" Grid.Row="6" Grid.Column="0" Click="Learn_Btn_Click">learn</Button>
-            <Button Name="check_Btn" IsDefault="True" IsEnabled="False" Grid.Row="6" Grid.Column="1" Click="Check_Btn_Click">check</Button>
-            <Label Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="4" VerticalAlignment="Center" Margin="0,8,64,7">Input character in the Box</Label>
-            <TextBox Grid.Column="5" Grid.Row="6"  TextChanged="Char_TextBox_TextChanged" x:Name="Char_TextBox" Margin="65,5,0,0" Padding="3" RenderTransformOrigin="2.35,0.514"/>
-            <TextBox Grid.Column="4" Grid.Row="1" x:Name="Result_TextBox"  Margin="5,5,5,10" Padding="3" Grid.ColumnSpan="2" Grid.RowSpan="5"/>
+    <Grid Name="userCharsDrawingGrid" Margin="10 10 10 5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Name="learn_Btn" IsDefault="True" IsEnabled="True" Grid.Row="6" Grid.Column="0" Click="Learn_Btn_Click">learn</Button>
+        <Button Name="check_Btn" IsDefault="False" IsEnabled="False" Grid.Row="6" Grid.Column="1" Click="Check_Btn_Click">check</Button>
+        <Label Visibility="Hidden" Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="4" VerticalAlignment="Center" Margin="0,8,64,7">Input character in the Box</Label>
+        <TextBox Visibility="Hidden" Grid.Column="5" Grid.Row="6"  TextChanged="Char_TextBox_TextChanged" x:Name="Char_TextBox" Margin="65,5,0,0" Padding="3" RenderTransformOrigin="2.35,0.514"/>
+        <TextBox Grid.Row="7" x:Name="Result_TextBox"  Margin="5" Padding="3" Grid.ColumnSpan="2"/>
+        <TextBox Grid.Row="8" x:Name="Era_TextBox" Margin="5" Padding="3" Grid.ColumnSpan="2"/>
 
-            <!--<ListBox Grid.Column="4" Grid.Row="0" x:Name="Chars_ListBox" Margin="5,5,0,10" Grid.RowSpan="2" Text="{Binding Path=DataContext.HeaderText}"/>-->
-            <!--<ItemsControl  Grid.Column="4" Grid.Row="0" x:Name="Chars_ListBox" Margin="5,5,0,10" Grid.RowSpan="2" ItemsSource="{Binding}">-->
-            <ListBox Grid.Column="4" Grid.Row="0" x:Name="Chars_ListBox" Margin="5,5,5,0" Grid.ColumnSpan="2">
-                <ListBox.ItemsPanel>
+        <!--<ListBox Grid.Column="4" Grid.Row="0" x:Name="Chars_ListBox" Margin="5,5,0,10" Grid.RowSpan="2" Text="{Binding Path=DataContext.HeaderText}"/>-->
+        <!--<ItemsControl  Grid.Column="4" Grid.Row="0" x:Name="Chars_ListBox" Margin="5,5,0,10" Grid.RowSpan="2" ItemsSource="{Binding}">-->
+        <ListBox Grid.Row="6" x:Name="Chars_ListBox" Margin="5" Grid.ColumnSpan="2" Grid.Column="2" Grid.RowSpan="4">
+            <!--<ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal"/>
                     </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Label}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <lvc:CartesianChart x:Name="Chart" Series="{Binding SeriesCollection}" Grid.Column="6" Grid.ColumnSpan="10" Grid.RowSpan="10"/>
-            <!--<oxy:Plot Grid.Column="6" Grid.ColumnSpan="10" Grid.RowSpan="10"  Title="{Binding Title}">
+                </ListBox.ItemsPanel>-->
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Label}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <lvc:CartesianChart x:Name="Chart" Series="{Binding SeriesCollection}" Grid.Column="5" Grid.RowSpan="10"/>
+        <!--<oxy:Plot Grid.Column="6" Grid.ColumnSpan="10" Grid.RowSpan="10"  Title="{Binding Title}">
                 <oxy:Plot.Series>
                     <oxy:LineSeries ItemsSource="{Binding Points}"/>
                 </oxy:Plot.Series>
             </oxy:Plot>-->
-        </Grid>
-    </DockPanel>
+    </Grid>
 </Window>

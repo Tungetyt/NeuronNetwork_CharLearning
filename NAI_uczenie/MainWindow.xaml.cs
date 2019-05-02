@@ -35,11 +35,13 @@ namespace NeuronNetwork_CharLearning
 
         public MainWindow()
         {
+            this.WindowState = WindowState.Maximized;
             InitializeComponent();
-            Char_TextBox.Focus();
+            learn_Btn.Focus();
 
             Chars_ListBox.ItemsSource = InputsDatas;
             Result_TextBox.IsReadOnly = true;
+            Era_TextBox.IsReadOnly = true;
             learn_Btn.IsEnabled = true; //NEW
             Char_TextBox.IsEnabled = false; //NEW
 
@@ -81,7 +83,7 @@ namespace NeuronNetwork_CharLearning
                 X_GUI_Vector[position] = 0;
                 btn.Background = Brushes.White;
             }
-            Char_TextBox.Focus();
+            check_Btn.Focus();
         }
 
         public void Learn_Btn_Click(object sender, RoutedEventArgs e)
@@ -147,10 +149,10 @@ namespace NeuronNetwork_CharLearning
             Char_TextBox.Text = "";
             Result_TextBox.Text = "";
             check_Btn.IsEnabled = true;
-            Char_TextBox.Focus();
+            //Char_TextBox.Focus();
 
             var errors = NewNeuronNetwork.Teach();
-
+            Era_TextBox.Text = $"LAST ERA:\n{errors.Length - 1}";
             //{
             //    var eraIt = 0;
             //    var isErrorNonZero = true;
@@ -190,7 +192,7 @@ namespace NeuronNetwork_CharLearning
         void Check_Btn_Click(object sender, RoutedEventArgs e)
         {
             Result_TextBox.Text = $"FOUND: {NewNeuronNetwork.Test(X_GUI_Vector)}";
-            Char_TextBox.Focus();
+            //Char_TextBox.Focus();
         }
 
         void Char_TextBox_TextChanged(object sender, TextChangedEventArgs e)
