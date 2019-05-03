@@ -89,10 +89,6 @@ namespace NeuronNetwork_CharLearning
         public void Learn_Btn_Click(object sender, RoutedEventArgs e)
         {
             InputsDatas.Clear(); //NOWE
-
-            //Dictionary<char, int[]> biggusDickus = new Dictionary<char, int[]>();
-            //int counter = 0;
-
             var path = $@"{AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", "")}Data\data.txt";
 
             using (StreamReader file = new StreamReader(path))
@@ -142,7 +138,6 @@ namespace NeuronNetwork_CharLearning
 
             //    InputsDatas.Add(new InputData(x, userLabel));
             //}
-
 
             NewNeuronNetwork = new NeuronNetwork(InputsDatas);
 

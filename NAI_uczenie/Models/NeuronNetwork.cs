@@ -109,9 +109,9 @@ namespace NeuronNetwork_CharLearning.Models
                     }
 
                     //Zmiana wag i progow dla neuronow wyjsciowych
-                    for (var neurIt = 0; neurIt < maxOutputNeurons; neurIt++)
+                    for (var outNeurIt = 0; outNeurIt < maxOutputNeurons; outNeurIt++)
                     {
-                        Neuron outNeur = OutNeurons[neurIt];
+                        Neuron outNeur = OutNeurons[outNeurIt];
                         for (int i = 0; i < outNeur.Wages.Count(); i++)
                         {
                             outNeur.Wages[i] += alfa * outNeur.Epsilon * InNeurons[i].Y;
@@ -152,14 +152,14 @@ namespace NeuronNetwork_CharLearning.Models
         public char Test(double[] x_Vector)
         {
             var yIn = new double[MaxInputNeurons];
-            for (var neurIt = 0; neurIt < MaxInputNeurons; neurIt++)
+            for (var inNeurIt = 0; inNeurIt < MaxInputNeurons; inNeurIt++)
             {
-                yIn[neurIt] = CalcY(InNeurons[neurIt], x_Vector);
+                yIn[inNeurIt] = CalcY(InNeurons[inNeurIt], x_Vector);
             }
             var yOut = new double[maxOutputNeurons];
-            for (var neurIt = 0; neurIt < maxOutputNeurons; neurIt++)
+            for (var outNeurIt = 0; outNeurIt < maxOutputNeurons; outNeurIt++)
             {
-                yOut[neurIt] = CalcY(OutNeurons[neurIt], yIn);
+                yOut[outNeurIt] = CalcY(OutNeurons[outNeurIt], yIn);
             }
 
             for (var idIt = 0; idIt < InputsDatas.Count; idIt++)
