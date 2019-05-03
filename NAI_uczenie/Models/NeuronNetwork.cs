@@ -33,7 +33,7 @@ namespace NeuronNetwork_CharLearning.Models
             }
             else
             {
-                errorThreshold = 0.00001;
+                errorThreshold = 0.00000000000001;
                 MaxInputNeurons = 100;
             }
 

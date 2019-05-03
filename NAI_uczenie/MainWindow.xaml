@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NeuronNetwork_CharLearning"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="CharLerning" Height="500" Width="500">
+        Title="CharLerning" Height="450" Width="450">
     <!--<Window.DataContext>
         <local:MainViewModel/>
     </Window.DataContext>-->
