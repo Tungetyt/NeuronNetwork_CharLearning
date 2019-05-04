@@ -28,7 +28,7 @@ namespace NeuronNetwork_CharLearning.Models
 
             if (isUsingUnipolarFun)
             { 
-                MaxInputNeurons = 3;
+                MaxInputNeurons = 4;
             }
             else
             {
