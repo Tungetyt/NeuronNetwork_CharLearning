@@ -30,8 +30,7 @@ namespace NeuronNetwork_CharLearning
     {
         ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
         double[] X_GUI_Vector { get; set; }
-        NeuronNetwork NewNeuronNetwork { get; set; }
-        public SeriesCollection SeriesCollection { get; set; }
+        NeuronNetwork NeuronNetwork { get; set; }
 
         public MainWindow()
         {
@@ -123,30 +122,30 @@ namespace NeuronNetwork_CharLearning
             //    double[] xVector = new double[X_GUI_Vector.Length];
             //    Array.Copy(X_GUI_Vector, xVector, X_GUI_Vector.Length);
 
-            //    if (biggusDickus.ContainsKey(userLabel))
+            //    if (biggusDicus.ContainsKey(userLabel))
             //    {
-            //        InputsDatas.Add(new InputData(xVector, userLabel, biggusDickus[userLabel]));
+            //        InputsDatas.Add(new InputData(xVector, userLabel, biggusDicus[userLabel]));
             //    }
             //    else
             //    {
             //        int[] dArr = new int[NeuronNetwork.maxOutputNeurons];
             //        dArr[counter] = 1;
             //        counter++;
-            //        biggusDickus.Add(userLabel, dArr);
+            //        biggusDicus.Add(userLabel, dArr);
             //        InputsDatas.Add(new InputData(xVector, userLabel, dArr));
             //    }
 
             //    InputsDatas.Add(new InputData(x, userLabel));
             //}
 
-            NewNeuronNetwork = new NeuronNetwork(InputsDatas);
+            NeuronNetwork = new NeuronNetwork(InputsDatas);
 
             Char_TextBox.Text = "";
             Result_TextBox.Text = "";
             check_Btn.IsEnabled = true;
             //Char_TextBox.Focus();
 
-            var errors = NewNeuronNetwork.Teach();
+            var errors = NeuronNetwork.Teach();
             Era_TextBox.Text = $"LAST ERA:\n{errors.Length - 1}";
             //{
             //    var eraIt = 0;
@@ -174,7 +173,7 @@ namespace NeuronNetwork_CharLearning
                     Y = errors[i]
                 });
             }
-            SeriesCollection = new SeriesCollection
+            var SeriesCollection = new SeriesCollection
             {
                 new LineSeries
                 {
@@ -186,7 +185,7 @@ namespace NeuronNetwork_CharLearning
 
         void Check_Btn_Click(object sender, RoutedEventArgs e)
         {
-            Result_TextBox.Text = $"FOUND: {NewNeuronNetwork.Test(X_GUI_Vector)}";
+            Result_TextBox.Text = $"FOUND: {NeuronNetwork.Test(X_GUI_Vector)}";
             //Char_TextBox.Focus();
         }
 
