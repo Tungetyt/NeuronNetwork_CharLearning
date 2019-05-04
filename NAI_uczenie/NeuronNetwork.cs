@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAI_uczenie.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,34 +15,24 @@ namespace NeuronNetwork_CharLearning.Models
         public const double lambda = 1.0;
         public double ErrorThreshold { get; set; } = 0.1;
         public const int maxEra = 500;
-        const bool isUsingUnipolarFun = true;
-        public int MaxInputNeurons { get; set; } //Zastosowac tu wzor ; 17
+        public const int maxInputNeurons = 4; //Zastosowac tu wzor ; 17
         public const int maxOutputNeurons = 10;
         public double[] EraErrors { get; set; }
         ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
         List<Neuron> InNeurons { get; set; } = new List<Neuron>();
         List<Neuron> OutNeurons { get; set; } = new List<Neuron>();
+        IFunction Fun { get; set; } = new SigmoidalUnipolarFunction();
 
         public NeuronNetwork(ObservableCollection<InputData> InputsDatas)
         {
             this.InputsDatas = InputsDatas;
-
-            if (isUsingUnipolarFun)
-            { 
-                MaxInputNeurons = 4;
-            }
-            else
-            {
-                MaxInputNeurons = 9;
-            }
-
             EraErrors  = new double[maxEra + 1];
 
             //generowanie Neuronow wejsciowych
-            InNeurons = Create_NEURONS(MaxInputNeurons, InputsDatas[0].X_Vector.Length);
+            InNeurons = Create_NEURONS(maxInputNeurons, InputsDatas[0].X_Vector.Length);
 
             //generowanie Neuronow wyjsciowych
-            OutNeurons = Create_NEURONS(maxOutputNeurons, MaxInputNeurons);
+            OutNeurons = Create_NEURONS(maxOutputNeurons, maxInputNeurons);
         }
 
         public double[] Teach()
@@ -130,7 +121,7 @@ namespace NeuronNetwork_CharLearning.Models
 
         private void Calc_WAGES_THETA_Changes_EPSILONS(InputData currInputData, int eraIt)
         {
-            for (var inNeurIt = 0; inNeurIt < MaxInputNeurons; inNeurIt++)
+            for (var inNeurIt = 0; inNeurIt < maxInputNeurons; inNeurIt++)
             {
                 Neuron inNeur = InNeurons[inNeurIt];
                 inNeur.Epsilon = 0.0;
@@ -140,7 +131,7 @@ namespace NeuronNetwork_CharLearning.Models
                     inNeur.Epsilon += outNeur.Wage_Vector[inNeurIt] * outNeur.Epsilon;
                 }
 
-                inNeur.Epsilon *= CalcSigmoidalFunDerivative(inNeur.Y);
+                inNeur.Epsilon *= Fun.CalcDerivative(inNeur.Y, lambda);
                 //EraErrors[eraIt] += inNeur.Epsilon;
 
                 //Zmiana wag i progow dla neuronow wejsciowych
@@ -156,14 +147,14 @@ namespace NeuronNetwork_CharLearning.Models
                 outNeur.Y = Calc_Y(outNeur, InNeurons);
                 double y = outNeur.Y;
                 double D_Y_diff = currInputData.D_Vector[outNeurIt] - y;
-                outNeur.Epsilon = D_Y_diff * CalcSigmoidalFunDerivative(y);
+                outNeur.Epsilon = D_Y_diff * Fun.CalcDerivative(y, lambda);
                 EraErrors[eraIt] += D_Y_diff * D_Y_diff;
             }
         }
 
         private void Calc_Y_Vector(InputData currInputData)
         {
-            for (var inNeurIt = 0; inNeurIt < MaxInputNeurons; inNeurIt++)
+            for (var inNeurIt = 0; inNeurIt < maxInputNeurons; inNeurIt++)
             {
                 Neuron inNeur = InNeurons[inNeurIt];
                 inNeur.Y = Calc_Y(inNeur, currInputData.X_Vector);
@@ -210,48 +201,32 @@ namespace NeuronNetwork_CharLearning.Models
 
         private void Calc_Y_Vector(double[] x_Vector)
         {
-            for (var inNeurIt = 0; inNeurIt < MaxInputNeurons; inNeurIt++)
+            for (var inNeurIt = 0; inNeurIt < maxInputNeurons; inNeurIt++)
             {
                 var inNeur = InNeurons[inNeurIt];
                 inNeur.Y = Calc_Y(inNeur, x_Vector);
             }
         }
 
-        static double CalcSigmoidalFun(double x)
-        {
-            if(isUsingUnipolarFun)
-                return 1 / (1 + Math.Pow(Math.E, -lambda * x));
-
-            return 2 / (1 + Math.Pow(Math.E, -lambda * x)) - 1;
-        }
-
-        static double CalcSigmoidalFunDerivative(double fx)
-        {
-            if(isUsingUnipolarFun)
-                return lambda * fx * (1 - fx);
-
-            return lambda * (1 - fx * fx) / 2;
-        }
-
         //Obliczanie Net i Y 
-        static double Calc_Y(Neuron neur, double[] x_Vector)
+        double Calc_Y(Neuron neur, double[] x_Vector)
         {
             double net = 0.0;
             for (var i = 0; i < x_Vector.Length; i++)
                 net += neur.Wage_Vector[i] * x_Vector[i];
 
             net += neur.Theta;
-            return CalcSigmoidalFun(net);
+            return Fun.Calc(net, lambda);
         }
 
-        static double Calc_Y(Neuron outNeur, List<Neuron> inNeurons)
+        double Calc_Y(Neuron outNeur, List<Neuron> inNeurons)
         {
             double net = 0.0;
             for (var i = 0; i < inNeurons.Count; i++)
                 net += outNeur.Wage_Vector[i] * inNeurons[i].Y;
 
             net += outNeur.Theta;
-            return CalcSigmoidalFun(net);
+            return Fun.Calc(net, lambda);
         }
     }
 }

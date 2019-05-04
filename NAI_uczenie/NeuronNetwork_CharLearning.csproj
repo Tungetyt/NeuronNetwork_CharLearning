@@ -77,10 +77,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\AdditionalStaff.cs" />
-    <Compile Include="Models\InputData.cs" />
-    <Compile Include="Models\Neuron.cs" />
-    <Compile Include="Models\NeuronNetwork.cs" />
+    <Compile Include="AdditionalStaff.cs" />
+    <Compile Include="Function.cs" />
+    <Compile Include="InputData.cs" />
+    <Compile Include="Neuron.cs" />
+    <Compile Include="NeuronNetwork.cs" />
+    <Compile Include="SigmoidalBipolarFunction.cs" />
+    <Compile Include="SigmoidalUnipolarFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
