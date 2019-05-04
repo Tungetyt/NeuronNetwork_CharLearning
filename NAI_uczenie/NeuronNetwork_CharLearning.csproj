@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdditionalStaff.cs" />
-    <Compile Include="Function.cs" />
+    <Compile Include="IFunction.cs" />
     <Compile Include="InputData.cs" />
     <Compile Include="Neuron.cs" />
     <Compile Include="NeuronNetwork.cs" />

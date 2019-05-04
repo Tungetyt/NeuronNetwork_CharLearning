@@ -13,7 +13,7 @@ namespace NeuronNetwork_CharLearning.Models
     {
         public const double alfa = 0.5; //learningCoefficient
         public const double lambda = 1.0;
-        public double ErrorThreshold { get; set; } = 0.1;
+        public const double ErrorThreshold  = 0.1;
         public const int maxEra = 500;
         public const int maxInputNeurons = 4; //Zastosowac tu wzor ; 17
         public const int maxOutputNeurons = 10;
