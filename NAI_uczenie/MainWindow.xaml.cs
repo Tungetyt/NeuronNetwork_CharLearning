@@ -40,7 +40,8 @@ namespace NeuronNetwork_CharLearning
             Chars_ListBox.ItemsSource = InputsDatas;
             Result_TextBox.IsReadOnly = true;
             Era_TextBox.IsReadOnly = true;
-            learn_Btn.IsEnabled = true; //NEW
+            LastError_TextBox.IsReadOnly = true;
+            learn_Btn.IsEnabled = true;
             learn_Btn.Focus();
 
             int coliumnSize = 4;
@@ -98,7 +99,8 @@ namespace NeuronNetwork_CharLearning
 
             NeuronNetwork = new NeuronNetwork(InputsDatas);
             var errors = NeuronNetwork.Teach();
-            Era_TextBox.Text = $"LAST ERA:\n{errors.Length - 1}";
+            Era_TextBox.Text = $"LAST\nERA:\n{errors.Length - 1}";
+            LastError_TextBox.Text = $"LAST\nERROR:\n{Math.Round(errors[errors.Length - 1], 2)}";
 
             InputChartData(errors);
         }

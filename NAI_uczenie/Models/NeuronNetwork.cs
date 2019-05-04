@@ -12,9 +12,9 @@ namespace NeuronNetwork_CharLearning.Models
     {
         public const double alfa = 0.5; //learningCoefficient
         public const double lambda = 1.0;
-        public double errorThreshold;
+        public double ErrorThreshold { get; set; } = 0.1;
         public const int maxEra = 500;
-        const bool isUsingUnipolarFun = true;
+        const bool isUsingUnipolarFun = false;
         public int MaxInputNeurons { get; set; } //Zastosowac tu wzor, 17
         public const int maxOutputNeurons = 10;
         public double[] EraErrors { get; set; }
@@ -27,14 +27,12 @@ namespace NeuronNetwork_CharLearning.Models
             this.InputsDatas = InputsDatas;
 
             if (isUsingUnipolarFun)
-            {
-                errorThreshold = 0.1;
+            { 
                 MaxInputNeurons = 3; //5??
             }
             else
             {
-                errorThreshold = 0.00000000000001;
-                MaxInputNeurons = 100;
+                MaxInputNeurons = 9;
             }
 
             EraErrors  = new double[maxEra + 1];
@@ -72,7 +70,7 @@ namespace NeuronNetwork_CharLearning.Models
                 AdditionalStaff.ChangeListOrder(InputsDatas);
 
                 //Wylicz blad sredni i ustal czy przerwac
-                if (CalcAvgError(eraIt) < errorThreshold)
+                if (CalcAvgError(eraIt) < ErrorThreshold)
                     break;
             }
 
