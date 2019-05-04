@@ -9,14 +9,14 @@ namespace NeuronNetwork_CharLearning.Models
 {
     public class Neuron
     {
-        public double[] Wages { get; set; }
+        public double[] Wage_Vector { get; set; }
         public double Theta { get; set; }
         public double Epsilon { get; set; } = 0.0;
         public double Y { get; set; }
 
         public Neuron(int numOfWages)
         {
-            Wages = new double[numOfWages];
+            Wage_Vector = new double[numOfWages];
 
             //Losowanie wag i progu wejsciowego
             Randomise_WAGES_And_Theta();
@@ -27,9 +27,9 @@ namespace NeuronNetwork_CharLearning.Models
             var min = -0.9;
             var max = 0.9;
 
-            for (var wageIt = 0; wageIt < Wages.Length; wageIt++)
+            for (var wageIt = 0; wageIt < Wage_Vector.Length; wageIt++)
             {
-                Wages[wageIt] = AdditionalStaff.GetRandomDouble(min, max);
+                Wage_Vector[wageIt] = AdditionalStaff.GetRandomDouble(min, max);
 
             }
             Theta = AdditionalStaff.GetRandomDouble(min, max);

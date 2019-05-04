@@ -95,7 +95,7 @@ namespace NeuronNetwork_CharLearning
             Result_TextBox.Text = "";
             check_Btn.IsEnabled = true;
 
-            ReadDataTxtAndPopulateINPUT_DATAS();
+            ReadDataToINPUT_DATAS();
 
             NeuronNetwork = new NeuronNetwork(InputsDatas);
             var errors = NeuronNetwork.Teach();
@@ -126,9 +126,9 @@ namespace NeuronNetwork_CharLearning
             Chart.Series = SeriesCollection;
         }
 
-        private void ReadDataTxtAndPopulateINPUT_DATAS()
+        private void ReadDataToINPUT_DATAS()
         {
-            InputsDatas.Clear(); //NOWE
+            InputsDatas.Clear();
             var path = $@"{AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", "")}Data\data.txt";
 
             using (StreamReader file = new StreamReader(path))
@@ -161,7 +161,6 @@ namespace NeuronNetwork_CharLearning
         void Check_Btn_Click(object sender, RoutedEventArgs e)
         {
             Result_TextBox.Text = $"FOUND: {NeuronNetwork.Test(X_GUI_Vector)}";
-            //Char_TextBox.Focus();
         }
     }
 }
