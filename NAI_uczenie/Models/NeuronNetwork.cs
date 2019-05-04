@@ -39,10 +39,8 @@ namespace NeuronNetwork_CharLearning.Models
 
             EraErrors  = new double[maxEra + 1];
 
-            int xLength = InputsDatas[0].X_Vector.Length;
-
             //generowanie Neuronow wejsciowych
-            InNeurons = Create_NEURONS(MaxInputNeurons, xLength);
+            InNeurons = Create_NEURONS(MaxInputNeurons, InputsDatas[0].X_Vector.Length);
 
             //generowanie Neuronow wyjsciowych
             OutNeurons = Create_NEURONS(maxOutputNeurons, MaxInputNeurons);
