@@ -34,15 +34,14 @@ namespace NeuronNetwork_CharLearning
 
         public MainWindow()
         {
-            this.WindowState = WindowState.Maximized;
+            WindowState = WindowState.Maximized;
             InitializeComponent();
-            learn_Btn.Focus();
 
             Chars_ListBox.ItemsSource = InputsDatas;
             Result_TextBox.IsReadOnly = true;
             Era_TextBox.IsReadOnly = true;
             learn_Btn.IsEnabled = true; //NEW
-            Char_TextBox.IsEnabled = false; //NEW
+            learn_Btn.Focus();
 
             int coliumnSize = 4;
             int rowsSize = 6;
@@ -50,6 +49,11 @@ namespace NeuronNetwork_CharLearning
             X_GUI_Vector = new double[coliumnSize * rowsSize];
 
             //Generowanie dynamiczne przyciskow do wprowadzania znaku
+            GenerateButtons(coliumnSize, rowsSize);
+        }
+
+        private void GenerateButtons(int coliumnSize, int rowsSize)
+        {
             for (int i = 0, counter = 0; i < rowsSize; i++)
             {
                 for (var j = 0; j < coliumnSize; j++)
@@ -87,83 +91,20 @@ namespace NeuronNetwork_CharLearning
 
         public void Learn_Btn_Click(object sender, RoutedEventArgs e)
         {
-            InputsDatas.Clear(); //NOWE
-            var path = $@"{AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", "")}Data\data.txt";
-
-            using (StreamReader file = new StreamReader(path))
-            {
-                string ln;
-                Dictionary<char, int[]> biggusDicus = new Dictionary<char, int[]>();
-                int counter = 0;
-
-                while ((ln = file.ReadLine()) != null)
-                {
-                    char label = ln[ln.Length - 1];
-                    double[] xVector = Regex.Replace(ln, @",.", "").Select(c => (double)(c - '0')).ToArray();
-    
-                    if (biggusDicus.ContainsKey(label))
-                    {
-                        InputsDatas.Add(new InputData(xVector, label, biggusDicus[label]));
-                    }
-                    else
-                    {
-                        int[] dArr = new int[NeuronNetwork.maxOutputNeurons];
-                        dArr[counter] = 1;
-                        counter++;
-                        biggusDicus.Add(label, dArr);
-                        InputsDatas.Add(new InputData(xVector, label, dArr));
-                    }
-                }
-            }
-
-            //char userLabel = Char_TextBox.Text[0];
-            //if (userLabel != '\0')
-            //{
-            //    double[] xVector = new double[X_GUI_Vector.Length];
-            //    Array.Copy(X_GUI_Vector, xVector, X_GUI_Vector.Length);
-
-            //    if (biggusDicus.ContainsKey(userLabel))
-            //    {
-            //        InputsDatas.Add(new InputData(xVector, userLabel, biggusDicus[userLabel]));
-            //    }
-            //    else
-            //    {
-            //        int[] dArr = new int[NeuronNetwork.maxOutputNeurons];
-            //        dArr[counter] = 1;
-            //        counter++;
-            //        biggusDicus.Add(userLabel, dArr);
-            //        InputsDatas.Add(new InputData(xVector, userLabel, dArr));
-            //    }
-
-            //    InputsDatas.Add(new InputData(x, userLabel));
-            //}
-
-            NeuronNetwork = new NeuronNetwork(InputsDatas);
-
-            Char_TextBox.Text = "";
             Result_TextBox.Text = "";
             check_Btn.IsEnabled = true;
-            //Char_TextBox.Focus();
 
+            ReadDataTxtAndPopulateINPUT_DATAS();
+
+            NeuronNetwork = new NeuronNetwork(InputsDatas);
             var errors = NeuronNetwork.Teach();
             Era_TextBox.Text = $"LAST ERA:\n{errors.Length - 1}";
-            //{
-            //    var eraIt = 0;
-            //    var isErrorNonZero = true;
-            //    StringBuilder sb = new StringBuilder();
-            //    foreach (var error in errors)
-            //    {
-            //        if (isErrorNonZero)
-            //        {
-            //            sb.AppendLine($"Error<{eraIt} era>: {error}");
-            //            eraIt++;
-            //        }
 
-            //        isErrorNonZero &= Math.Abs(error) >= NeuronNetwork.errorThreshold;
-            //    }
-            //    Result_TextBox.Text = sb.ToString();
-            //}
+            InputChartData(errors);
+        }
 
+        private void InputChartData(double[] errors)
+        {
             ChartValues<ObservablePoint> points = new ChartValues<ObservablePoint>();
             for (int i = 1; i < errors.Count(); i++)
             {
@@ -183,31 +124,42 @@ namespace NeuronNetwork_CharLearning
             Chart.Series = SeriesCollection;
         }
 
+        private void ReadDataTxtAndPopulateINPUT_DATAS()
+        {
+            InputsDatas.Clear(); //NOWE
+            var path = $@"{AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", "")}Data\data.txt";
+
+            using (StreamReader file = new StreamReader(path))
+            {
+                string ln;
+                Dictionary<char, int[]> biggusDicus = new Dictionary<char, int[]>();
+                int counter = 0;
+
+                while ((ln = file.ReadLine()) != null)
+                {
+                    char label = ln[ln.Length - 1];
+                    double[] xVector = Regex.Replace(ln, @",.", "").Select(c => (double)(c - '0')).ToArray();
+
+                    if (biggusDicus.ContainsKey(label))
+                    {
+                        InputsDatas.Add(new InputData(xVector, label, biggusDicus[label]));
+                    }
+                    else
+                    {
+                        int[] dArr = new int[NeuronNetwork.maxOutputNeurons];
+                        dArr[counter] = 1;
+                        counter++;
+                        biggusDicus.Add(label, dArr);
+                        InputsDatas.Add(new InputData(xVector, label, dArr));
+                    }
+                }
+            }
+        }
+
         void Check_Btn_Click(object sender, RoutedEventArgs e)
         {
             Result_TextBox.Text = $"FOUND: {NeuronNetwork.Test(X_GUI_Vector)}";
             //Char_TextBox.Focus();
-        }
-
-        void Char_TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //var tb = (TextBox)sender;
-            //learn_Btn.Focus();
-
-            //if (tb.Text.Length >= 1)
-            //{
-            //    tb.Text = "" + tb.Text.First();
-            //    if (Chars_ListBox.Items.Count < NeuronNetwork.maxOutputNeurons)
-            //        learn_Btn.IsEnabled = true;
-            //    else
-            //    {
-            //        Char_TextBox.Text = "";
-            //        Char_TextBox.IsEnabled = false;
-            //        learn_Btn.IsEnabled = false;
-            //    }
-            //}
-            //else
-            //    learn_Btn.IsEnabled = false;
         }
     }
 }

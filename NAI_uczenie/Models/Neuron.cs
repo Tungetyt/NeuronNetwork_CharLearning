@@ -18,10 +18,15 @@ namespace NeuronNetwork_CharLearning.Models
         {
             Wages = new double[numOfWages];
 
+            //Losowanie wag i progu wejsciowego
+            Randomise_WAGES_And_Theta();
+        }
+
+        private void Randomise_WAGES_And_Theta()
+        {
             var min = -0.9;
             var max = 0.9;
 
-            //Losowanie wag i progu wejsciowego
             for (var wageIt = 0; wageIt < Wages.Length; wageIt++)
             {
                 Wages[wageIt] = AdditionalStaff.GetRandomDouble(min, max);
