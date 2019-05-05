@@ -61,7 +61,7 @@ namespace NeuronNetwork_CharLearning.Models
                 AdditionalStaff.ChangeListOrder(InputsDatas);
 
                 //Wylicz blad sredni i ustal czy przerwac
-                if (CalcAvgError(eraIt) < ErrorThreshold)
+                if (/*CalcAvgError(eraIt)*/EraErrors[eraIt] < ErrorThreshold)
                     break;
             }
 
@@ -161,17 +161,6 @@ namespace NeuronNetwork_CharLearning.Models
             }
         }
 
-        private double CalcAvgError(int eraIt)
-        {
-            double avgError = 0.0;
-            for (int i = 1; i < eraIt + 1; i++)
-            {
-                avgError += Math.Abs(EraErrors[i]);
-            }
-            avgError /= eraIt;
-            return avgError;
-        }
-
         private void ChangeWAGES(Neuron neur, InputData inputData)
         {
             for (int i = 0; i < neur.Wage_Vector.Count(); i++)
@@ -228,5 +217,16 @@ namespace NeuronNetwork_CharLearning.Models
             net += outNeur.Theta;
             return Fun.Calc(net, lambda);
         }
+
+        //private double CalcAvgError(int eraIt)
+        //{
+        //    double avgError = 0.0;
+        //    for (int i = 1; i < eraIt + 1; i++)
+        //    {
+        //        avgError += Math.Abs(EraErrors[i]);
+        //    }
+        //    avgError /= eraIt;
+        //    return avgError;
+        //}
     }
 }
