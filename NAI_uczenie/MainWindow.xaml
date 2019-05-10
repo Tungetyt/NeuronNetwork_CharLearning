@@ -23,13 +23,13 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="70"/>
             <RowDefinition Height="70"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Button Name="learn_Btn" IsDefault="True" IsEnabled="True" Grid.Row="6" Grid.Column="0" Click="Learn_Btn_Click">learn</Button>
         <Button Name="check_Btn" IsDefault="False" IsEnabled="False" Grid.Row="6" Grid.Column="1" Click="Check_Btn_Click">check</Button>
-        <TextBox Grid.Row="7" x:Name="Result_TextBox" Foreground="Blue" FontWeight="Bold" Margin="5" Padding="3" Grid.ColumnSpan="2"/>
+        <TextBox Grid.Row="7" x:Name="Result_TextBox" Foreground="Blue" FontWeight="Bold" Margin="5" Padding="3" Grid.ColumnSpan="2" TextAlignment="Center"/>
         <TextBox Grid.Row="8" x:Name="Era_TextBox" Margin="5" Padding="3" Grid.ColumnSpan="2"/>
         <TextBox Grid.Row="9" x:Name="LastError_TextBox" Margin="5" Padding="3" Grid.ColumnSpan="2"/>
         <ListBox Grid.Row="6" x:Name="Chars_ListBox" Margin="5" Grid.ColumnSpan="2" Grid.Column="2" Grid.RowSpan="4">

@@ -20,6 +20,9 @@ using LiveCharts.Wpf;
 using LiveCharts.Defaults;
 using System.IO;
 using NeuronNetwork_CharLearning.Properties;
+using System.Threading;
+using System.Windows.Threading;
+using System.Windows.Media.Animation;
 
 namespace NeuronNetwork_CharLearning
 {
@@ -32,17 +35,15 @@ namespace NeuronNetwork_CharLearning
         double[] X_GUI_Vector { get; set; }
         NeuronNetwork NeuronNetwork { get; set; }
 
+        //static Thread th;
+        DoubleAnimation da = new DoubleAnimation();
+
         public MainWindow()
         {
             WindowState = WindowState.Maximized;
             InitializeComponent();
-
-            Chars_ListBox.ItemsSource = InputsDatas;
-            Result_TextBox.IsReadOnly = true;
-            Era_TextBox.IsReadOnly = true;
-            LastError_TextBox.IsReadOnly = true;
-            learn_Btn.IsEnabled = true;
-            learn_Btn.Focus();
+            PrepareControls();
+            PrepareAnimation();
 
             int coliumnSize = 4;
             int rowsSize = 6;
@@ -51,6 +52,25 @@ namespace NeuronNetwork_CharLearning
 
             //Generowanie dynamiczne przyciskow do wprowadzania znaku
             GenerateButtons(coliumnSize, rowsSize);
+        }
+
+        private void PrepareControls()
+        {
+            Chars_ListBox.ItemsSource = InputsDatas;
+            Result_TextBox.IsReadOnly = true;
+            Era_TextBox.IsReadOnly = true;
+            LastError_TextBox.IsReadOnly = true;
+            learn_Btn.IsEnabled = true;
+            learn_Btn.Focus();
+        }
+
+        private void PrepareAnimation()
+        {
+            da.From = 45;
+            da.To = 35;
+            da.AutoReverse = true;
+            da.RepeatBehavior = new RepeatBehavior(2);
+            da.Duration = new Duration(TimeSpan.FromSeconds(0.75));
         }
 
         private void GenerateButtons(int coliumnSize, int rowsSize)
@@ -160,7 +180,38 @@ namespace NeuronNetwork_CharLearning
 
         void Check_Btn_Click(object sender, RoutedEventArgs e)
         {
-            Result_TextBox.Text = $"FOUND: {NeuronNetwork.Test(X_GUI_Vector)}";
+            char found = NeuronNetwork.Test(X_GUI_Vector);
+            Result_TextBox.Text = $"{(char)found}";
+            Result_TextBox.BeginAnimation(TextBox.FontSizeProperty, da);
+            //if (found != '\0')
+            //{
+            //    //this.Dispatcher.Invoke(() =>
+            //    //{
+            //    //    new Thread(ResultMigotanie).Start(found);
+            //    //    //Dispatcher.Invoke(new Action(() => ResultMigotanie), DispatcherPriority.ContextIdle);
+            //    //    //new Thread(ResultMigotanie).Start(found);
+            //    //});
+            //    th = new Thread(ResultFlicking);
+            //    th.Start(found);
+            //}
         }
+
+
+        //void ResultFlicking(Object found)
+        //{
+        //    this.Dispatcher.Invoke(() =>
+        //    {
+        //        while (true)
+        //        {
+        //            Result_TextBox.Text = $"FOUND: {(char)found}";
+        //            Console.WriteLine("HEY");
+        //            th.Join(3000)/*.Sleep(3000)*/;
+        //            Console.WriteLine("HEY2");
+        //            Result_TextBox.Text = "";
+        //            th.Join(1000);
+        //        }
+        //    });
+
+        //}
     }
 }

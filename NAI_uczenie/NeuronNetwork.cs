@@ -198,7 +198,7 @@ namespace NeuronNetwork_CharLearning.Models
         }
 
         //Obliczanie Net i Y 
-        double Calc_Y(Neuron neur, double[] x_Vector)
+        private double Calc_Y(Neuron neur, double[] x_Vector)
         {
             double net = 0.0;
             for (var i = 0; i < x_Vector.Length; i++)
@@ -208,7 +208,7 @@ namespace NeuronNetwork_CharLearning.Models
             return Fun.Calc(net, lambda);
         }
 
-        double Calc_Y(Neuron outNeur, List<Neuron> inNeurons)
+        private double Calc_Y(Neuron outNeur, List<Neuron> inNeurons)
         {
             double net = 0.0;
             for (var i = 0; i < inNeurons.Count; i++)
