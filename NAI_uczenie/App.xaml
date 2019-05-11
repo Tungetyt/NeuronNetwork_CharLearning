@@ -4,6 +4,5 @@
              xmlns:local="clr-namespace:NeuronNetwork_CharLearning"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
     </Application.Resources>
 </Application>

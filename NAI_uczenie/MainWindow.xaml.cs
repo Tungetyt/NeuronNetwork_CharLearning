@@ -1,27 +1,16 @@
-﻿using NeuronNetwork_CharLearning.Models;
+﻿using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
+using NeuronNetwork_CharLearning.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using LiveCharts;
-using LiveCharts.Wpf;
-using LiveCharts.Defaults;
-using System.IO;
-using NeuronNetwork_CharLearning.Properties;
-using System.Threading;
-using System.Windows.Threading;
 using System.Windows.Media.Animation;
 
 namespace NeuronNetwork_CharLearning
@@ -31,16 +20,17 @@ namespace NeuronNetwork_CharLearning
     /// </summary>
     public partial class MainWindow : Window
     {
-        ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
-        double[] X_GUI_Vector { get; set; }
-        NeuronNetwork NeuronNetwork { get; set; }
-
         //static Thread th;
-        DoubleAnimation da = new DoubleAnimation();
+        private ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
+
+        private NeuronNetwork NeuronNetwork { get; set; }
+        private double[] X_GUI_Vector { get; set; }
+
+        private DoubleAnimation da = new DoubleAnimation();
 
         public MainWindow()
         {
-            WindowState = WindowState.Maximized;
+            this.WindowState = WindowState.Maximized;
             InitializeComponent();
             PrepareControls();
             PrepareAnimation();
@@ -54,23 +44,37 @@ namespace NeuronNetwork_CharLearning
             GenerateButtons(coliumnSize, rowsSize);
         }
 
-        private void PrepareControls()
+        public void Learn_Btn_Click(object sender, RoutedEventArgs e)
         {
-            Chars_ListBox.ItemsSource = InputsDatas;
-            Result_TextBox.IsReadOnly = true;
-            Era_TextBox.IsReadOnly = true;
-            LastError_TextBox.IsReadOnly = true;
-            learn_Btn.IsEnabled = true;
-            learn_Btn.Focus();
+            Result_TextBox.Text = "";
+            check_Btn.IsEnabled = true;
+
+            ReadDataToINPUT_DATAS();
+
+            NeuronNetwork = new NeuronNetwork(InputsDatas);
+            var errors = NeuronNetwork.Teach();
+            Era_TextBox.Text = $"LAST\nERA:\n{errors.Length - 1}";
+            LastError_TextBox.Text = $"LAST\nERROR:\n{Math.Round(errors[errors.Length - 1], 2)}";
+
+            InputChartData(errors);
         }
 
-        private void PrepareAnimation()
+        private void Check_Btn_Click(object sender, RoutedEventArgs e)
         {
-            da.From = 45;
-            da.To = 35;
-            da.AutoReverse = true;
-            da.RepeatBehavior = new RepeatBehavior(2);
-            da.Duration = new Duration(TimeSpan.FromSeconds(0.75));
+            char found = NeuronNetwork.Test(X_GUI_Vector);
+            Result_TextBox.Text = $"{(char)found}";
+            Result_TextBox.BeginAnimation(TextBox.FontSizeProperty, da);
+            //if (found != '\0')
+            //{
+            //    //this.Dispatcher.Invoke(() =>
+            //    //{
+            //    //    new Thread(ResultMigotanie).Start(found);
+            //    //    //Dispatcher.Invoke(new Action(() => ResultMigotanie), DispatcherPriority.ContextIdle);
+            //    //    //new Thread(ResultMigotanie).Start(found);
+            //    //});
+            //    th = new Thread(ResultFlicking);
+            //    th.Start(found);
+            //}
         }
 
         private void GenerateButtons(int coliumnSize, int rowsSize)
@@ -92,39 +96,6 @@ namespace NeuronNetwork_CharLearning
             }
         }
 
-        //Oprogramowanie przyciskow do wprowadzania znaku
-        void UserCharsDrawingBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var btn = (Button)sender;
-            var position = Int32.Parse(Regex.Replace(btn.Name, "b", ""));
-            if (X_GUI_Vector[position] == 0)
-            {
-                X_GUI_Vector[position] = 1;
-                btn.Background = Brushes.Blue;
-            }
-            else if (X_GUI_Vector[position] == 1)
-            {
-                X_GUI_Vector[position] = 0;
-                btn.Background = Brushes.White;
-            }
-            check_Btn.Focus();
-        }
-
-        public void Learn_Btn_Click(object sender, RoutedEventArgs e)
-        {
-            Result_TextBox.Text = "";
-            check_Btn.IsEnabled = true;
-
-            ReadDataToINPUT_DATAS();
-
-            NeuronNetwork = new NeuronNetwork(InputsDatas);
-            var errors = NeuronNetwork.Teach();
-            Era_TextBox.Text = $"LAST\nERA:\n{errors.Length - 1}";
-            LastError_TextBox.Text = $"LAST\nERROR:\n{Math.Round(errors[errors.Length - 1], 2)}";
-
-            InputChartData(errors);
-        }
-
         private void InputChartData(double[] errors)
         {
             ChartValues<ObservablePoint> points = new ChartValues<ObservablePoint>();
@@ -144,6 +115,25 @@ namespace NeuronNetwork_CharLearning
                 }
             };
             Chart.Series = SeriesCollection;
+        }
+
+        private void PrepareAnimation()
+        {
+            da.From = 35;
+            da.To = 45;
+            da.AutoReverse = true;
+            da.RepeatBehavior = new RepeatBehavior(2);
+            da.Duration = new Duration(TimeSpan.FromSeconds(0.75));
+        }
+
+        private void PrepareControls()
+        {
+            Chars_ListBox.ItemsSource = InputsDatas;
+            Result_TextBox.IsReadOnly = true;
+            Era_TextBox.IsReadOnly = true;
+            LastError_TextBox.IsReadOnly = true;
+            learn_Btn.IsEnabled = true;
+            learn_Btn.Focus();
         }
 
         private void ReadDataToINPUT_DATAS()
@@ -178,24 +168,23 @@ namespace NeuronNetwork_CharLearning
             }
         }
 
-        void Check_Btn_Click(object sender, RoutedEventArgs e)
+        //Oprogramowanie przyciskow do wprowadzania znaku
+        private void UserCharsDrawingBtn_Click(object sender, RoutedEventArgs e)
         {
-            char found = NeuronNetwork.Test(X_GUI_Vector);
-            Result_TextBox.Text = $"{(char)found}";
-            Result_TextBox.BeginAnimation(TextBox.FontSizeProperty, da);
-            //if (found != '\0')
-            //{
-            //    //this.Dispatcher.Invoke(() =>
-            //    //{
-            //    //    new Thread(ResultMigotanie).Start(found);
-            //    //    //Dispatcher.Invoke(new Action(() => ResultMigotanie), DispatcherPriority.ContextIdle);
-            //    //    //new Thread(ResultMigotanie).Start(found);
-            //    //});
-            //    th = new Thread(ResultFlicking);
-            //    th.Start(found);
-            //}
+            var btn = (Button)sender;
+            var position = Int32.Parse(Regex.Replace(btn.Name, "b", ""));
+            if (X_GUI_Vector[position] == 0)
+            {
+                X_GUI_Vector[position] = 1;
+                btn.Background = Brushes.Blue;
+            }
+            else if (X_GUI_Vector[position] == 1)
+            {
+                X_GUI_Vector[position] = 0;
+                btn.Background = Brushes.White;
+            }
+            check_Btn.Focus();
         }
-
 
         //void ResultFlicking(Object found)
         //{

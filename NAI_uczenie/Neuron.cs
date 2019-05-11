@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace NeuronNetwork_CharLearning.Models
+﻿namespace NeuronNetwork_CharLearning.Models
 {
     public class Neuron
     {
@@ -30,7 +23,6 @@ namespace NeuronNetwork_CharLearning.Models
             for (var wageIt = 0; wageIt < Wage_Vector.Length; wageIt++)
             {
                 Wage_Vector[wageIt] = AdditionalStaff.GetRandomDouble(min, max);
-
             }
             Theta = AdditionalStaff.GetRandomDouble(min, max);
         }

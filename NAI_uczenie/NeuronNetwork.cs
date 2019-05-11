@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NeuronNetwork_CharLearning.Models
 {
@@ -13,20 +10,20 @@ namespace NeuronNetwork_CharLearning.Models
     {
         public const double alfa = 0.5; //learningCoefficient
         public const double lambda = 1.0;
-        public const double ErrorThreshold  = 0.1;
+        public const double ErrorThreshold = 0.1;
         public const int maxEra = 500;
         public const int maxInputNeurons = 4; //Zastosowac tu wzor ; 17
         public const int maxOutputNeurons = 10;
         public double[] EraErrors { get; set; }
-        ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
-        List<Neuron> InNeurons { get; set; } = new List<Neuron>();
-        List<Neuron> OutNeurons { get; set; } = new List<Neuron>();
-        IFunction Fun { get; set; } = new SigmoidalUnipolarFunction();
+        private ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
+        private List<Neuron> InNeurons { get; set; } = new List<Neuron>();
+        private List<Neuron> OutNeurons { get; set; } = new List<Neuron>();
+        private IFunction Fun { get; set; } = new SigmoidalUnipolarFunction();
 
         public NeuronNetwork(ObservableCollection<InputData> InputsDatas)
         {
             this.InputsDatas = InputsDatas;
-            EraErrors  = new double[maxEra + 1];
+            EraErrors = new double[maxEra + 1];
 
             //generowanie Neuronow wejsciowych
             InNeurons = Create_NEURONS(maxInputNeurons, InputsDatas[0].X_Vector.Length);
@@ -152,15 +149,6 @@ namespace NeuronNetwork_CharLearning.Models
             }
         }
 
-        private void Calc_Y_Vector(InputData currInputData)
-        {
-            for (var inNeurIt = 0; inNeurIt < maxInputNeurons; inNeurIt++)
-            {
-                Neuron inNeur = InNeurons[inNeurIt];
-                inNeur.Y = Calc_Y(inNeur, currInputData.X_Vector);
-            }
-        }
-
         private void ChangeWAGES(Neuron neur, InputData inputData)
         {
             for (int i = 0; i < neur.Wage_Vector.Count(); i++)
@@ -177,6 +165,15 @@ namespace NeuronNetwork_CharLearning.Models
                 neur.Wage_Vector[i] += alfa * neur.Epsilon * neurons[i].Y;
             }
             neur.Theta += alfa * neur.Epsilon;
+        }
+
+        private void Calc_Y_Vector(InputData currInputData)
+        {
+            for (var inNeurIt = 0; inNeurIt < maxInputNeurons; inNeurIt++)
+            {
+                Neuron inNeur = InNeurons[inNeurIt];
+                inNeur.Y = Calc_Y(inNeur, currInputData.X_Vector);
+            }
         }
 
         private void Calc_Y_Vector()
@@ -197,7 +194,7 @@ namespace NeuronNetwork_CharLearning.Models
             }
         }
 
-        //Obliczanie Net i Y 
+        //Obliczanie Net i Y
         private double Calc_Y(Neuron neur, double[] x_Vector)
         {
             double net = 0.0;
