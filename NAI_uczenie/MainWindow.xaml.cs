@@ -26,7 +26,7 @@ namespace NeuronNetwork_CharLearning
         private NeuronNetwork NeuronNetwork { get; set; }
         private double[] X_GUI_Vector { get; set; }
 
-        private DoubleAnimation da = new DoubleAnimation();
+        private DoubleAnimation animation = new DoubleAnimation();
 
         public MainWindow()
         {
@@ -44,7 +44,7 @@ namespace NeuronNetwork_CharLearning
             GenerateButtons(coliumnSize, rowsSize);
         }
 
-        public void Learn_Btn_Click(object sender, RoutedEventArgs e)
+        private void Learn_Btn_Click(object sender, RoutedEventArgs e)
         {
             Result_TextBox.Text = "";
             check_Btn.IsEnabled = true;
@@ -53,6 +53,7 @@ namespace NeuronNetwork_CharLearning
 
             NeuronNetwork = new NeuronNetwork(InputsDatas);
             var errors = NeuronNetwork.Teach();
+
             Era_TextBox.Text = $"LAST\nERA:\n{errors.Length - 1}";
             LastError_TextBox.Text = $"LAST\nERROR:\n{Math.Round(errors[errors.Length - 1], 2)}";
 
@@ -61,9 +62,9 @@ namespace NeuronNetwork_CharLearning
 
         private void Check_Btn_Click(object sender, RoutedEventArgs e)
         {
-            char found = NeuronNetwork.Test(X_GUI_Vector);
-            Result_TextBox.Text = $"{(char)found}";
-            Result_TextBox.BeginAnimation(TextBox.FontSizeProperty, da);
+            //char found = NeuronNetwork.Test(X_GUI_Vector);
+            Result_TextBox.Text = $"{/*(char)found*/ NeuronNetwork.Test(X_GUI_Vector)}";
+            Result_TextBox.BeginAnimation(TextBox.FontSizeProperty, animation);
             //if (found != '\0')
             //{
             //    //this.Dispatcher.Invoke(() =>
@@ -81,7 +82,7 @@ namespace NeuronNetwork_CharLearning
         {
             for (int i = 0, counter = 0; i < rowsSize; i++)
             {
-                for (var j = 0; j < coliumnSize; j++)
+                for (int j = 0; j < coliumnSize; j++)
                 {
                     var btn = new Button();
                     btn.Click += UserCharsDrawingBtn_Click;
@@ -98,7 +99,7 @@ namespace NeuronNetwork_CharLearning
 
         private void InputChartData(double[] errors)
         {
-            ChartValues<ObservablePoint> points = new ChartValues<ObservablePoint>();
+            var points = new ChartValues<ObservablePoint>();
             for (int i = 1; i < errors.Count(); i++)
             {
                 points.Add(new ObservablePoint
@@ -119,11 +120,11 @@ namespace NeuronNetwork_CharLearning
 
         private void PrepareAnimation()
         {
-            da.From = 35;
-            da.To = 45;
-            da.AutoReverse = true;
-            da.RepeatBehavior = new RepeatBehavior(2);
-            da.Duration = new Duration(TimeSpan.FromSeconds(0.75));
+            animation.From = 35;
+            animation.To = 45;
+            animation.AutoReverse = true;
+            animation.RepeatBehavior = new RepeatBehavior(2);
+            animation.Duration = new Duration(TimeSpan.FromSeconds(0.75));
         }
 
         private void PrepareControls()
@@ -144,7 +145,7 @@ namespace NeuronNetwork_CharLearning
             using (StreamReader file = new StreamReader(path))
             {
                 string ln;
-                Dictionary<char, int[]> biggusDicus = new Dictionary<char, int[]>();
+                var biggusDicus = new Dictionary<char, int[]>();
                 int counter = 0;
 
                 while ((ln = file.ReadLine()) != null)
@@ -172,7 +173,7 @@ namespace NeuronNetwork_CharLearning
         private void UserCharsDrawingBtn_Click(object sender, RoutedEventArgs e)
         {
             var btn = (Button)sender;
-            var position = Int32.Parse(Regex.Replace(btn.Name, "b", ""));
+            int position = Int32.Parse(Regex.Replace(btn.Name, "b", ""));
             if (X_GUI_Vector[position] == 0)
             {
                 X_GUI_Vector[position] = 1;
