@@ -10,9 +10,9 @@ namespace NeuronNetwork_CharLearning.Models
     {
         public const double alfa = 0.5; //learningCoefficient
         public const double lambda = 1.0;
-        public const double ErrorThreshold = 0.1;
+        public const double ErrorThreshold = 1;
         public const int maxEra = 500;
-        public const int maxInputNeurons = 4; //Zastosowac tu wzor ; 17
+        public const int maxInputNeurons = 5; //Zastosowac tu wzor ; 17
         public const int maxOutputNeurons = 10;
         public double[] EraErrors { get; set; }
         private ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
