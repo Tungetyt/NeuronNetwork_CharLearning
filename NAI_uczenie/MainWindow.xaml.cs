@@ -99,6 +99,17 @@ namespace NeuronNetwork_CharLearning
 
         private void InputChartData(double[] errors)
         {
+            Chart.Series = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Values = GetPoints(errors)
+                }
+            };
+        }
+
+        private ChartValues<ObservablePoint> GetPoints(double[] errors)
+        {
             var points = new ChartValues<ObservablePoint>();
             for (int i = 1; i < errors.Count(); i++)
             {
@@ -108,14 +119,8 @@ namespace NeuronNetwork_CharLearning
                     Y = errors[i]
                 });
             }
-            var SeriesCollection = new SeriesCollection
-            {
-                new LineSeries
-                {
-                    Values = points
-                }
-            };
-            Chart.Series = SeriesCollection;
+
+            return points;
         }
 
         private void PrepareAnimation()

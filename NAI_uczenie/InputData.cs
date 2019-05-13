@@ -1,4 +1,4 @@
-﻿namespace NeuronNetwork_CharLearning.Models
+﻿namespace NeuronNetwork_CharLearning
 {
     public class InputData
     {
