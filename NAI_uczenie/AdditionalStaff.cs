@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace NeuronNetwork_CharLearning.Models
@@ -12,7 +13,7 @@ namespace NeuronNetwork_CharLearning.Models
             return rand.NextDouble() * (max - min) + min;
         }
 
-        internal static void ChangeListOrder(ObservableCollection<InputData> InputsDatas)
+        internal static void ChangeListOrder(List<InputData> InputsDatas)
         {
             for (int idIt = 0; idIt < InputsDatas.Count; idIt++)
             {

@@ -21,7 +21,6 @@ namespace NeuronNetwork_CharLearning
     public partial class MainWindow : Window
     {
         //static Thread th;
-        private ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
 
         private NeuronNetwork NeuronNetwork { get; set; }
         private double[] X_GUI_Vector { get; set; }
@@ -49,9 +48,11 @@ namespace NeuronNetwork_CharLearning
             Result_TextBox.Text = "";
             check_Btn.IsEnabled = true;
 
-            ReadDataToINPUT_DATAS();
+            List<InputData> Datas = ReadDataToList();
 
-            NeuronNetwork = new NeuronNetwork(InputsDatas);
+            Chars_ListBox.ItemsSource = Datas;
+
+            NeuronNetwork = new NeuronNetwork(Datas);
             var errors = NeuronNetwork.Teach();
 
             Era_TextBox.Text = $"LAST\nERA:\n{errors.Length - 1}";
@@ -134,7 +135,6 @@ namespace NeuronNetwork_CharLearning
 
         private void PrepareControls()
         {
-            Chars_ListBox.ItemsSource = InputsDatas;
             Result_TextBox.IsReadOnly = true;
             Era_TextBox.IsReadOnly = true;
             LastError_TextBox.IsReadOnly = true;
@@ -142,9 +142,9 @@ namespace NeuronNetwork_CharLearning
             learn_Btn.Focus();
         }
 
-        private void ReadDataToINPUT_DATAS()
+        private List<InputData> ReadDataToList()
         {
-            InputsDatas.Clear();
+            var Datas = new List<InputData>();
             var path = $@"{AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", "")}Data\data.txt";
 
             using (StreamReader file = new StreamReader(path))
@@ -158,19 +158,26 @@ namespace NeuronNetwork_CharLearning
                     char label = ln[ln.Length - 1];
                     double[] xVector = Regex.Replace(ln, @",.", "").Select(c => (double)(c - '0')).ToArray();
 
-                    if (biggusDicus.ContainsKey(label))
-                    {
-                        InputsDatas.Add(new InputData(xVector, label, biggusDicus[label]));
-                    }
-                    else
-                    {
-                        int[] dArr = new int[NeuronNetwork.maxOutputNeurons];
-                        dArr[counter] = 1;
-                        counter++;
-                        biggusDicus.Add(label, dArr);
-                        InputsDatas.Add(new InputData(xVector, label, dArr));
-                    }
+                    CreateInputData(biggusDicus, ref label, xVector, ref counter, Datas);
                 }
+            }
+
+            return Datas;
+        }
+
+        private void CreateInputData(Dictionary<char, int[]> biggusDicus, ref char label, double[] xVector, ref int counter, List<InputData> newDatas)
+        {
+            if (biggusDicus.ContainsKey(label))
+            {
+                newDatas.Add(new InputData(xVector, label, biggusDicus[label]));
+            }
+            else
+            {
+                int[] dArr = new int[NeuronNetwork.maxOutputNeurons];
+                dArr[counter] = 1;
+                counter++;
+                biggusDicus.Add(label, dArr);
+                newDatas.Add(new InputData(xVector, label, dArr));
             }
         }
 
