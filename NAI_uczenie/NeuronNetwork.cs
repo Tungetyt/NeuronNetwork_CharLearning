@@ -10,19 +10,20 @@ namespace NeuronNetwork_CharLearning.Models
     {
         public const double alfa = 0.5; //learningCoefficient
         public const double lambda = 1.0;
-        public const double ErrorThreshold = 1;
+        public const double ErrorThreshold = 0.1;
         public const int maxEra = 500;
         public const int maxInputNeurons = 5; //Zastosowac tu wzor ; 17
-        public const int maxOutputNeurons = 10;
+        public static int maxOutputNeurons { get; set; } = 10;
         public double[] EraErrors { get; set; }
         private ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
         private List<Neuron> InNeurons { get; set; } = new List<Neuron>();
         private List<Neuron> OutNeurons { get; set; } = new List<Neuron>();
         private IFunction Fun { get; set; } = new SigmoidalUnipolarFunction();
 
-        public NeuronNetwork(ObservableCollection<InputData> InputsDatas)
+        public NeuronNetwork(ObservableCollection<InputData> InputsDatas, int numOfDistinctLabels)
         {
             this.InputsDatas = InputsDatas;
+            maxOutputNeurons = numOfDistinctLabels;
             EraErrors = new double[maxEra + 1];
 
             //generowanie Neuronow wejsciowych

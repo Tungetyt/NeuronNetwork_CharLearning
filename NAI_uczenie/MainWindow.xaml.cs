@@ -28,6 +28,8 @@ namespace NeuronNetwork_CharLearning
 
         private DoubleAnimation animation = new DoubleAnimation();
 
+        int numOfDistinctLabels { get; set; }
+
         public MainWindow()
         {
             this.WindowState = WindowState.Maximized;
@@ -51,7 +53,7 @@ namespace NeuronNetwork_CharLearning
 
             ReadDataToINPUT_DATAS();
 
-            NeuronNetwork = new NeuronNetwork(InputsDatas);
+            NeuronNetwork = new NeuronNetwork(InputsDatas, numOfDistinctLabels);
             var errors = NeuronNetwork.Teach();
 
             Era_TextBox.Text = $"LAST\nERA:\n{errors.Length - 1}";
@@ -151,7 +153,7 @@ namespace NeuronNetwork_CharLearning
             {
                 string ln;
                 var biggusDicus = new Dictionary<char, int[]>();
-                int counter = 0;
+                numOfDistinctLabels = 0;
 
                 while ((ln = file.ReadLine()) != null)
                 {
@@ -165,8 +167,8 @@ namespace NeuronNetwork_CharLearning
                     else
                     {
                         int[] dArr = new int[NeuronNetwork.maxOutputNeurons];
-                        dArr[counter] = 1;
-                        counter++;
+                        dArr[numOfDistinctLabels] = 1;
+                        numOfDistinctLabels++;
                         biggusDicus.Add(label, dArr);
                         InputsDatas.Add(new InputData(xVector, label, dArr));
                     }
