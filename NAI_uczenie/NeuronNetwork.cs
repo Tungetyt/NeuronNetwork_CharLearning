@@ -13,24 +13,24 @@ namespace NeuronNetwork_CharLearning.Models
         public const double ErrorThreshold = 0.1;
         public const int maxEra = 500;
         public const int maxInputNeurons = 5; //Zastosowac tu wzor ; 17
-        public static int maxOutputNeurons { get; set; } = 10;
+        public static int MaxOutputNeurons { get; set; } = 10; //SHOULDNT BE 10!!!!!!!! SHOULD BE EMPTY
         public double[] EraErrors { get; set; }
-        private ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
-        private List<Neuron> InNeurons { get; set; } = new List<Neuron>();
-        private List<Neuron> OutNeurons { get; set; } = new List<Neuron>();
+        private ObservableCollection<InputData> InputsDatas { get; set; }
+        private List<Neuron> InNeurons { get; set; }
+        private List<Neuron> OutNeurons { get; set; }
         private IFunction Fun { get; set; } = new SigmoidalUnipolarFunction();
 
         public NeuronNetwork(ObservableCollection<InputData> InputsDatas, int numOfDistinctLabels)
         {
             this.InputsDatas = InputsDatas;
-            maxOutputNeurons = numOfDistinctLabels;
+            MaxOutputNeurons = numOfDistinctLabels;
             EraErrors = new double[maxEra + 1];
 
             //generowanie Neuronow wejsciowych
             InNeurons = Create_NEURONS(maxInputNeurons, InputsDatas[0].X_Vector.Length);
 
             //generowanie Neuronow wyjsciowych
-            OutNeurons = Create_NEURONS(maxOutputNeurons, maxInputNeurons);
+            OutNeurons = Create_NEURONS(MaxOutputNeurons, maxInputNeurons);
         }
 
         public double[] Teach()
@@ -43,23 +43,23 @@ namespace NeuronNetwork_CharLearning.Models
                     var currInputData = InputsDatas[idIt];
 
                     //Obliczenie y dla warstwy wejsciowej
-                    Calc_Y_Vector(currInputData);
+                    CalcY_Vector(currInputData);
 
                     //Obliczenie y i epsilonow dla warstwy wyjsciowej
-                    Calc_Y_Vector_EPSILONS_ERAERRORS(currInputData, eraIt);
+                    CalcY_VectorAndErrors(currInputData, eraIt);
 
                     //Obliczenie epsilonow i zmiana wag i progow dla warstwy wejsciowej
-                    Calc_WAGES_THETA_Changes_EPSILONS(currInputData, eraIt);
+                    TeachNeuronsCalcEpsilon(currInputData, eraIt);
 
                     //Zmiana wag i progow dla neuronow wyjsciowych
-                    Calc_WAGES_THETA_Changes_InMultiply_NEURONS();
+                    TeachNeurons();
                 }
 
                 //Zmiana kolejnosci
                 AdditionalStaff.ChangeListOrder(InputsDatas);
 
                 //Wylicz blad sredni i ustal czy przerwac
-                if (/*CalcAvgError(eraIt)*/EraErrors[eraIt] < ErrorThreshold)
+                if (EraErrors[eraIt] < ErrorThreshold)
                     break;
             }
 
@@ -72,16 +72,16 @@ namespace NeuronNetwork_CharLearning.Models
         public char Test(double[] x_Vector)
         {
             //Wylicz Y-Wektor dla Neuronow wejsc.
-            Calc_Y_Vector(x_Vector);
+            CalcY_Vector(x_Vector);
 
             //Wylicz Y-Wektor dla Neuronow wyjsc.
-            Calc_Y_Vector();
+            CalcY_Vector();
 
             //Porownaj Y z D i wypluj znak jak sie zgadza
             for (var idIt = 0; idIt < InputsDatas.Count; idIt++)
             {
                 var currInputData = InputsDatas[idIt];
-                for (var i = 0; i < maxOutputNeurons; i++)
+                for (var i = 0; i < MaxOutputNeurons; i++)
                 {
                     if (currInputData.D_Vector[i] != (int)Math.Round(OutNeurons[i].Y))
                     {
@@ -89,7 +89,7 @@ namespace NeuronNetwork_CharLearning.Models
                     }
 
                     //Jesli udalo sie dojsc do konca to zwroc znak
-                    if (i == maxOutputNeurons - 1)
+                    if (i == MaxOutputNeurons - 1)
                     {
                         return currInputData.Label;
                     }
@@ -109,40 +109,39 @@ namespace NeuronNetwork_CharLearning.Models
             return neurons;
         }
 
-        private void Calc_WAGES_THETA_Changes_InMultiply_NEURONS()
+        private void TeachNeurons()
         {
-            for (var outNeurIt = 0; outNeurIt < maxOutputNeurons; outNeurIt++)
+            for (var outNeurIt = 0; outNeurIt < MaxOutputNeurons; outNeurIt++)
             {
-                ChangeWAGES(OutNeurons[outNeurIt], InNeurons);
+                TeachNeuron(OutNeurons[outNeurIt], InNeurons);
             }
         }
 
-        private void Calc_WAGES_THETA_Changes_EPSILONS(InputData currInputData, int eraIt)
+        private void TeachNeuronsCalcEpsilon(InputData currInputData, int eraIt)
         {
             for (var inNeurIt = 0; inNeurIt < maxInputNeurons; inNeurIt++)
             {
                 Neuron inNeur = InNeurons[inNeurIt];
                 inNeur.Epsilon = 0.0;
-                for (var outNeurIt = 0; outNeurIt < maxOutputNeurons; outNeurIt++)
+                for (var outNeurIt = 0; outNeurIt < MaxOutputNeurons; outNeurIt++)
                 {
                     Neuron outNeur = OutNeurons[outNeurIt];
                     inNeur.Epsilon += outNeur.Wage_Vector[inNeurIt] * outNeur.Epsilon;
                 }
 
                 inNeur.Epsilon *= Fun.CalcDerivative(inNeur.Y, lambda);
-                //EraErrors[eraIt] += inNeur.Epsilon;
 
                 //Zmiana wag i progow dla neuronow wejsciowych
-                ChangeWAGES(inNeur, currInputData);
+                TeachNeuron(inNeur, currInputData);
             }
         }
 
-        private void Calc_Y_Vector_EPSILONS_ERAERRORS(InputData currInputData, int eraIt)
+        private void CalcY_VectorAndErrors(InputData currInputData, int eraIt)
         {
-            for (var outNeurIt = 0; outNeurIt < maxOutputNeurons; outNeurIt++)
+            for (var outNeurIt = 0; outNeurIt < MaxOutputNeurons; outNeurIt++)
             {
                 Neuron outNeur = OutNeurons[outNeurIt];
-                outNeur.Y = Calc_Y(outNeur, InNeurons);
+                outNeur.Y = CalcY(outNeur, InNeurons);
                 double y = outNeur.Y;
                 double D_Y_diff = currInputData.D_Vector[outNeurIt] - y;
                 outNeur.Epsilon = D_Y_diff * Fun.CalcDerivative(y, lambda);
@@ -150,7 +149,7 @@ namespace NeuronNetwork_CharLearning.Models
             }
         }
 
-        private void ChangeWAGES(Neuron neur, InputData inputData)
+        private void TeachNeuron(Neuron neur, InputData inputData)
         {
             for (int i = 0; i < neur.Wage_Vector.Count(); i++)
             {
@@ -159,7 +158,7 @@ namespace NeuronNetwork_CharLearning.Models
             neur.Theta += alfa * neur.Epsilon;
         }
 
-        private void ChangeWAGES(Neuron neur, List<Neuron> neurons)
+        private void TeachNeuron(Neuron neur, List<Neuron> neurons)
         {
             for (int i = 0; i < neur.Wage_Vector.Count(); i++)
             {
@@ -168,35 +167,35 @@ namespace NeuronNetwork_CharLearning.Models
             neur.Theta += alfa * neur.Epsilon;
         }
 
-        private void Calc_Y_Vector(InputData currInputData)
+        private void CalcY_Vector(InputData currInputData)
         {
             for (var inNeurIt = 0; inNeurIt < maxInputNeurons; inNeurIt++)
             {
                 Neuron inNeur = InNeurons[inNeurIt];
-                inNeur.Y = Calc_Y(inNeur, currInputData.X_Vector);
+                inNeur.Y = CalcY(inNeur, currInputData.X_Vector);
             }
         }
 
-        private void Calc_Y_Vector()
+        private void CalcY_Vector()
         {
-            for (var outNeurIt = 0; outNeurIt < maxOutputNeurons; outNeurIt++)
+            for (var outNeurIt = 0; outNeurIt < MaxOutputNeurons; outNeurIt++)
             {
                 var outNeur = OutNeurons[outNeurIt];
-                outNeur.Y = Calc_Y(outNeur, InNeurons);
+                outNeur.Y = CalcY(outNeur, InNeurons);
             }
         }
 
-        private void Calc_Y_Vector(double[] x_Vector)
+        private void CalcY_Vector(double[] x_Vector)
         {
             for (var inNeurIt = 0; inNeurIt < maxInputNeurons; inNeurIt++)
             {
                 var inNeur = InNeurons[inNeurIt];
-                inNeur.Y = Calc_Y(inNeur, x_Vector);
+                inNeur.Y = CalcY(inNeur, x_Vector);
             }
         }
 
         //Obliczanie Net i Y
-        private double Calc_Y(Neuron neur, double[] x_Vector)
+        private double CalcY(Neuron neur, double[] x_Vector)
         {
             double net = 0.0;
             for (var i = 0; i < x_Vector.Length; i++)
@@ -206,7 +205,7 @@ namespace NeuronNetwork_CharLearning.Models
             return Fun.Calc(net, lambda);
         }
 
-        private double Calc_Y(Neuron outNeur, List<Neuron> inNeurons)
+        private double CalcY(Neuron outNeur, List<Neuron> inNeurons)
         {
             double net = 0.0;
             for (var i = 0; i < inNeurons.Count; i++)
@@ -215,16 +214,5 @@ namespace NeuronNetwork_CharLearning.Models
             net += outNeur.Theta;
             return Fun.Calc(net, lambda);
         }
-
-        //private double CalcAvgError(int eraIt)
-        //{
-        //    double avgError = 0.0;
-        //    for (int i = 1; i < eraIt + 1; i++)
-        //    {
-        //        avgError += Math.Abs(EraErrors[i]);
-        //    }
-        //    avgError /= eraIt;
-        //    return avgError;
-        //}
     }
 }

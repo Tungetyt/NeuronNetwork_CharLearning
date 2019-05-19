@@ -28,7 +28,7 @@ namespace NeuronNetwork_CharLearning
 
         private DoubleAnimation animation = new DoubleAnimation();
 
-        int numOfDistinctLabels { get; set; }
+        private int numOfDistinctLabels { get; set; }
 
         public MainWindow()
         {
@@ -51,7 +51,7 @@ namespace NeuronNetwork_CharLearning
             Result_TextBox.Text = "";
             check_Btn.IsEnabled = true;
 
-            ReadDataToINPUT_DATAS();
+            ReadData();
 
             NeuronNetwork = new NeuronNetwork(InputsDatas, numOfDistinctLabels);
             var errors = NeuronNetwork.Teach();
@@ -144,7 +144,7 @@ namespace NeuronNetwork_CharLearning
             learn_Btn.Focus();
         }
 
-        private void ReadDataToINPUT_DATAS()
+        private void ReadData()
         {
             InputsDatas.Clear();
             var path = $@"{AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", "")}Data\data.txt";
@@ -166,7 +166,7 @@ namespace NeuronNetwork_CharLearning
                     }
                     else
                     {
-                        int[] dArr = new int[NeuronNetwork.maxOutputNeurons];
+                        int[] dArr = new int[NeuronNetwork.MaxOutputNeurons];
                         dArr[numOfDistinctLabels] = 1;
                         numOfDistinctLabels++;
                         biggusDicus.Add(label, dArr);

@@ -12,10 +12,10 @@
             Wage_Vector = new double[numOfWages];
 
             //Losowanie wag i progu wejsciowego
-            Randomise_WAGES_And_Theta();
+            Randomise();
         }
 
-        private void Randomise_WAGES_And_Theta()
+        private void Randomise()
         {
             var min = -0.9;
             var max = 0.9;
