@@ -8,12 +8,12 @@ namespace NeuronNetwork_CharLearning.Models
 {
     public class NeuronNetwork
     {
-        public const double alfa = 0.5; //learningCoefficient
+        public const double alfa = 0.5; 
         public const double lambda = 1.0;
         public const double ErrorThreshold = 0.1;
         public const int maxEra = 500;
-        public const int maxInputNeurons = 5; //Zastosowac tu wzor ; 17
-        public static int MaxOutputNeurons { get; set; } = 10; //SHOULDNT BE 10!!!!!!!! SHOULD BE EMPTY
+        public const int maxInputNeurons = 5;     
+        public static int MaxOutputNeurons { get; set; } = 10;      
         public double[] EraErrors { get; set; }
         private ObservableCollection<InputData> InputsDatas { get; set; }
         private List<Neuron> InNeurons { get; set; }
@@ -26,10 +26,8 @@ namespace NeuronNetwork_CharLearning.Models
             MaxOutputNeurons = numOfDistinctLabels;
             EraErrors = new double[maxEra + 1];
 
-            //generowanie Neuronow wejsciowych
             InNeurons = CreateNeurons(maxInputNeurons, InputsDatas[0].X_Vector.Length);
 
-            //generowanie Neuronow wyjsciowych
             OutNeurons = CreateNeurons(MaxOutputNeurons, maxInputNeurons);
         }
 
@@ -42,23 +40,17 @@ namespace NeuronNetwork_CharLearning.Models
                 {
                     var currInputData = InputsDatas[idIt];
 
-                    //Obliczenie y dla warstwy wejsciowej
                     CalcInY_Vector(currInputData);
 
-                    //Obliczenie y i epsilonow dla warstwy wyjsciowej
                     CalcOutY_VectorAndErrors(currInputData, eraIt);
 
-                    //Obliczenie epsilonow i zmiana wag i progow dla warstwy wejsciowej
                     TeachInNeuronsCalcEpsilon(currInputData, eraIt);
 
-                    //Zmiana wag i progow dla neuronow wyjsciowych
                     TeachOutNeurons();
                 }
 
-                //Zmiana kolejnosci
                 AdditionalStaff.ChangeListOrder(InputsDatas);
 
-                //Wylicz blad sredni i ustal czy przerwac
                 if (EraErrors[eraIt] < ErrorThreshold)
                     break;
             }
@@ -71,13 +63,10 @@ namespace NeuronNetwork_CharLearning.Models
 
         public char Test(double[] x_Vector)
         {
-            //Wylicz Y-Wektor dla Neuronow wejsc.
             CalcInY_Vector(x_Vector);
 
-            //Wylicz Y-Wektor dla Neuronow wyjsc.
             CalcOutY_Vector();
 
-            //Porownaj Y z D i wypluj znak jak sie zgadza
             for (int idIt = 0; idIt < InputsDatas.Count; idIt++)
             {
                 var currInputData = InputsDatas[idIt];
@@ -88,7 +77,6 @@ namespace NeuronNetwork_CharLearning.Models
                         break;
                     }
 
-                    //Jesli udalo sie dojsc do konca to zwroc znak
                     if (i == MaxOutputNeurons - 1)
                     {
                         return currInputData.Label;
@@ -122,9 +110,7 @@ namespace NeuronNetwork_CharLearning.Models
             for (int inNeurIt = 0; inNeurIt < maxInputNeurons; inNeurIt++)
             {
                 Neuron inNeur = InNeurons[inNeurIt];
-                //Wyliczanie epsilona wejsciowego
                 CalcInEpsilon(inNeur, inNeurIt);
-                //Zmiana wag i progow dla neuronow wejsciowych
                 TeachInNeuron(inNeur, currInputData);
             }
         }
@@ -199,7 +185,6 @@ namespace NeuronNetwork_CharLearning.Models
             }
         }
 
-        //Obliczanie Net i Y
         private double CalcInY(Neuron neur, double[] x_Vector)
         {
             double net = 0.0;

@@ -20,15 +20,14 @@ namespace NeuronNetwork_CharLearning
     /// </summary>
     public partial class MainWindow : Window
     {
-        //static Thread th;
         private ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
 
         private NeuronNetwork NeuronNetwork { get; set; }
         private double[] X_GUI_Vector { get; set; }
 
-        private DoubleAnimation animation = new DoubleAnimation();
+        private readonly DoubleAnimation animation = new DoubleAnimation();
 
-        private int numOfDistinctLabels { get; set; }
+        private int NumOfDistinctLabels { get; set; }
 
         public MainWindow()
         {
@@ -41,7 +40,6 @@ namespace NeuronNetwork_CharLearning
 
             X_GUI_Vector = new double[coliumnSize * rowsSize];
 
-            //Generowanie dynamiczne przyciskow do wprowadzania znaku
             GenerateButtons(coliumnSize, rowsSize);
         }
 
@@ -52,7 +50,7 @@ namespace NeuronNetwork_CharLearning
 
             ReadData();
 
-            NeuronNetwork = new NeuronNetwork(InputsDatas, numOfDistinctLabels);
+            NeuronNetwork = new NeuronNetwork(InputsDatas, NumOfDistinctLabels);
             var errors = NeuronNetwork.Teach();
 
             Era_TextBox.Text = $"LAST\nERA:\n{errors.Length - 1}";
@@ -63,20 +61,8 @@ namespace NeuronNetwork_CharLearning
 
         private void Check_Btn_Click(object sender, RoutedEventArgs e)
         {
-            //char found = NeuronNetwork.Test(X_GUI_Vector);
-            Result_TextBox.Text = $"{/*(char)found*/ NeuronNetwork.Test(X_GUI_Vector)}";
+            Result_TextBox.Text = $"{ NeuronNetwork.Test(X_GUI_Vector)}";
             Result_TextBox.BeginAnimation(TextBox.FontSizeProperty, animation);
-            //if (found != '\0')
-            //{
-            //    //this.Dispatcher.Invoke(() =>
-            //    //{
-            //    //    new Thread(ResultMigotanie).Start(found);
-            //    //    //Dispatcher.Invoke(new Action(() => ResultMigotanie), DispatcherPriority.ContextIdle);
-            //    //    //new Thread(ResultMigotanie).Start(found);
-            //    //});
-            //    th = new Thread(ResultFlicking);
-            //    th.Start(found);
-            //}
         }
 
         private void GenerateButtons(int coliumnSize, int rowsSize)
@@ -159,34 +145,41 @@ namespace NeuronNetwork_CharLearning
             InputsDatas.Clear();
             var path = $@"{AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", "")}Data\data.txt";
 
-            using (StreamReader file = new StreamReader(path))
+            using StreamReader file = new StreamReader(path);
+            PopulateInputsDatas(file);
+        }
+
+        private void PopulateInputsDatas(StreamReader file)
+        {
+            string ln;
+            var biggusDicus = new Dictionary<char, int[]>();
+            NumOfDistinctLabels = 0;
+
+            while ((ln = file.ReadLine()) != null)
             {
-                string ln;
-                var biggusDicus = new Dictionary<char, int[]>();
-                numOfDistinctLabels = 0;
-
-                while ((ln = file.ReadLine()) != null)
-                {
-                    char label = ln[ln.Length - 1];
-                    double[] xVector = Regex.Replace(ln, @",.", "").Select(c => (double)(c - '0')).ToArray();
-
-                    if (biggusDicus.ContainsKey(label))
-                    {
-                        InputsDatas.Add(new InputData(xVector, label, biggusDicus[label]));
-                    }
-                    else
-                    {
-                        int[] dArr = new int[NeuronNetwork.MaxOutputNeurons];
-                        dArr[numOfDistinctLabels] = 1;
-                        numOfDistinctLabels++;
-                        biggusDicus.Add(label, dArr);
-                        InputsDatas.Add(new InputData(xVector, label, dArr));
-                    }
-                }
+                AddDataToInputsDatas(biggusDicus, ln);
             }
         }
 
-        //Oprogramowanie przyciskow do wprowadzania znaku
+        private void AddDataToInputsDatas(Dictionary<char, int[]> biggusDicus, string ln)
+        {
+            char label = ln[ln.Length - 1];
+            double[] xVector = Regex.Replace(ln, @",.", "").Select(c => (double)(c - '0')).ToArray();
+
+            if (biggusDicus.ContainsKey(label))
+            {
+                InputsDatas.Add(new InputData(xVector, label, biggusDicus[label]));
+            }
+            else
+            {
+                int[] dArr = new int[NeuronNetwork.MaxOutputNeurons];
+                dArr[NumOfDistinctLabels] = 1;
+                NumOfDistinctLabels++;
+                biggusDicus.Add(label, dArr);
+                InputsDatas.Add(new InputData(xVector, label, dArr));
+            }
+        }
+
         private void UserCharsDrawingBtn_Click(object sender, RoutedEventArgs e)
         {
             var btn = (Button)sender;
@@ -204,21 +197,5 @@ namespace NeuronNetwork_CharLearning
             check_Btn.Focus();
         }
 
-        //void ResultFlicking(Object found)
-        //{
-        //    this.Dispatcher.Invoke(() =>
-        //    {
-        //        while (true)
-        //        {
-        //            Result_TextBox.Text = $"FOUND: {(char)found}";
-        //            Console.WriteLine("HEY");
-        //            th.Join(3000)/*.Sleep(3000)*/;
-        //            Console.WriteLine("HEY2");
-        //            Result_TextBox.Text = "";
-        //            th.Join(1000);
-        //        }
-        //    });
-
-        //}
     }
 }
