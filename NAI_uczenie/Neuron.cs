@@ -10,8 +10,6 @@
         public Neuron(int numOfWages)
         {
             Wage_Vector = new double[numOfWages];
-
-            //Losowanie wag i progu wejsciowego
             Randomise();
         }
 

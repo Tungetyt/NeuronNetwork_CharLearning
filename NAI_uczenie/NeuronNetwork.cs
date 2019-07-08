@@ -25,9 +25,7 @@ namespace NeuronNetwork_CharLearning.Models
             this.InputsDatas = InputsDatas;
             MaxOutputNeurons = numOfDistinctLabels;
             EraErrors = new double[maxEra + 1];
-
             InNeurons = CreateNeurons(maxInputNeurons, InputsDatas[0].X_Vector.Length);
-
             OutNeurons = CreateNeurons(MaxOutputNeurons, maxInputNeurons);
         }
 
@@ -39,13 +37,9 @@ namespace NeuronNetwork_CharLearning.Models
                 for (int idIt = 0; idIt < InputsDatas.Count(); idIt++)
                 {
                     var currInputData = InputsDatas[idIt];
-
                     CalcInY_Vector(currInputData);
-
                     CalcOutY_VectorAndErrors(currInputData, eraIt);
-
                     TeachInNeuronsCalcEpsilon(currInputData, eraIt);
-
                     TeachOutNeurons();
                 }
 
@@ -64,7 +58,6 @@ namespace NeuronNetwork_CharLearning.Models
         public char Test(double[] x_Vector)
         {
             CalcInY_Vector(x_Vector);
-
             CalcOutY_Vector();
 
             for (int idIt = 0; idIt < InputsDatas.Count; idIt++)
