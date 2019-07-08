@@ -61,7 +61,7 @@ namespace NeuronNetwork_CharLearning
 
         private void Check_Btn_Click(object sender, RoutedEventArgs e)
         {
-            Result_TextBox.Text = $"{ NeuronNetwork.Test(X_GUI_Vector)}";
+            Result_TextBox.Text = $"{NeuronNetwork.Test(X_GUI_Vector)}";
             Result_TextBox.BeginAnimation(TextBox.FontSizeProperty, animation);
         }
 

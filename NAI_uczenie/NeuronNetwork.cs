@@ -35,15 +35,7 @@ namespace NeuronNetwork_CharLearning.Models
             int eraIt = 1;
             for (; eraIt <= maxEra; eraIt++)
             {
-                for (int idIt = 0; idIt < InputsDatas.Count(); idIt++)
-                {
-                    var currInputData = InputsDatas[idIt];
-
-                    CalcInY_Vector(currInputData);
-                    CalcOutY_VectorAndErrors(currInputData, eraIt);
-                    TeachInNeuronsCalcEpsilon(currInputData, eraIt);
-                    TeachOutNeurons();
-                }
+                TeachEra(eraIt);
 
                 AdditionalStaff.ChangeListOrder(InputsDatas);
 
@@ -55,6 +47,19 @@ namespace NeuronNetwork_CharLearning.Models
             Array.Copy(EraErrors, EraErrorsShortened, eraIt);
 
             return EraErrorsShortened;
+        }
+
+        private void TeachEra(int eraIt)
+        {
+            for (int idIt = 0; idIt < InputsDatas.Count(); idIt++)
+            {
+                var currInputData = InputsDatas[idIt];
+
+                CalcInY_Vector(currInputData);
+                CalcOutY_VectorAndErrors(currInputData, eraIt);
+                TeachInNeuronsCalcEpsilon(currInputData, eraIt);
+                TeachOutNeurons();
+            }
         }
 
         public char Test(double[] x_Vector)
