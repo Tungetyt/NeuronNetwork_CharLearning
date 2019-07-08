@@ -8,12 +8,12 @@ namespace NeuronNetwork_CharLearning.Models
 {
     public class NeuronNetwork
     {
-        public const double alfa = 0.5; 
+        public const double alfa = 0.5;
         public const double lambda = 1.0;
         public const double ErrorThreshold = 0.1;
         public const int maxEra = 500;
-        public const int maxInputNeurons = 5;     
-        public static int MaxOutputNeurons { get; set; } = 10;      
+        public const int maxInputNeurons = 5;
+        public static int MaxOutputNeurons { get; set; } = 10;
         public double[] EraErrors { get; set; }
         private ObservableCollection<InputData> InputsDatas { get; set; }
         private List<Neuron> InNeurons { get; set; }
@@ -25,6 +25,7 @@ namespace NeuronNetwork_CharLearning.Models
             this.InputsDatas = InputsDatas;
             MaxOutputNeurons = numOfDistinctLabels;
             EraErrors = new double[maxEra + 1];
+
             InNeurons = CreateNeurons(maxInputNeurons, InputsDatas[0].X_Vector.Length);
             OutNeurons = CreateNeurons(MaxOutputNeurons, maxInputNeurons);
         }
@@ -37,6 +38,7 @@ namespace NeuronNetwork_CharLearning.Models
                 for (int idIt = 0; idIt < InputsDatas.Count(); idIt++)
                 {
                     var currInputData = InputsDatas[idIt];
+
                     CalcInY_Vector(currInputData);
                     CalcOutY_VectorAndErrors(currInputData, eraIt);
                     TeachInNeuronsCalcEpsilon(currInputData, eraIt);
@@ -87,6 +89,7 @@ namespace NeuronNetwork_CharLearning.Models
             {
                 neurons.Add(new Neuron(numOfWages));
             }
+
             return neurons;
         }
 
@@ -185,6 +188,7 @@ namespace NeuronNetwork_CharLearning.Models
                 net += neur.Wage_Vector[i] * x_Vector[i];
 
             net += neur.Theta;
+
             return Fun.Calc(net, lambda);
         }
 
@@ -195,6 +199,7 @@ namespace NeuronNetwork_CharLearning.Models
                 net += outNeur.Wage_Vector[i] * inNeurons[i].Y;
 
             net += outNeur.Theta;
+
             return Fun.Calc(net, lambda);
         }
     }

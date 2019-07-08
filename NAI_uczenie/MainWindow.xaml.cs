@@ -196,6 +196,5 @@ namespace NeuronNetwork_CharLearning
             }
             check_Btn.Focus();
         }
-
     }
 }
