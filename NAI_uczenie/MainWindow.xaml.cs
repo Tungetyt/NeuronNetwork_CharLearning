@@ -35,7 +35,6 @@ namespace NeuronNetwork_CharLearning
             this.WindowState = WindowState.Maximized;
             InitializeComponent();
             PrepareControls();
-            PrepareAnimation();
 
             int coliumnSize = 4;
             int rowsSize = 6;
@@ -142,6 +141,17 @@ namespace NeuronNetwork_CharLearning
             LastError_TextBox.IsReadOnly = true;
             learn_Btn.IsEnabled = true;
             learn_Btn.Focus();
+            PrepareChart();
+            PrepareAnimation();
+        }
+
+        private void PrepareChart()
+        {
+            Chart.AxisY.Clear();
+            Chart.AxisY.Add(new Axis
+            {
+                MinValue = 0
+            });
         }
 
         private void ReadData()
