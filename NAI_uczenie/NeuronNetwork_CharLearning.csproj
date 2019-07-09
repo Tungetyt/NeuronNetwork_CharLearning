@@ -63,6 +63,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Tools\DataReader.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -77,13 +78,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdditionalStaff.cs" />
-    <Compile Include="IFunction.cs" />
-    <Compile Include="InputData.cs" />
-    <Compile Include="Neuron.cs" />
-    <Compile Include="NeuronNetwork.cs" />
-    <Compile Include="SigmoidalBipolarFunction.cs" />
-    <Compile Include="SigmoidalUnipolarFunction.cs" />
+    <Compile Include="Tools\AdditionalStaff.cs" />
+    <Compile Include="Functions\IFunction.cs" />
+    <Compile Include="Model\InputData.cs" />
+    <Compile Include="Controller\Neuron.cs" />
+    <Compile Include="Controller\NeuronNetwork.cs" />
+    <Compile Include="Functions\SigmoidalBipolarFunction.cs" />
+    <Compile Include="Functions\SigmoidalUnipolarFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

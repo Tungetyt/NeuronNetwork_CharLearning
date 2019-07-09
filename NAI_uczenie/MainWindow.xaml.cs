@@ -1,11 +1,10 @@
 ﻿using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;
+using NAI_uczenie.Tools;
 using NeuronNetwork_CharLearning.Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -20,14 +19,12 @@ namespace NeuronNetwork_CharLearning
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
+        public ObservableCollection<InputData> InputsDatas { get; set; } = new ObservableCollection<InputData>();
 
         private NeuronNetwork NeuronNetwork { get; set; }
         private double[] X_GUI_Vector { get; set; }
 
         private readonly DoubleAnimation animation = new DoubleAnimation();
-
-        private int NumOfDistinctLabels { get; set; }
 
         public MainWindow()
         {
@@ -48,9 +45,7 @@ namespace NeuronNetwork_CharLearning
             Result_TextBox.Text = "";
             check_Btn.IsEnabled = true;
 
-            ReadData();
-
-            NeuronNetwork = new NeuronNetwork(InputsDatas, NumOfDistinctLabels);
+            NeuronNetwork = new NeuronNetwork(InputsDatas, new DataReader(InputsDatas).ReadData());
             var errors = NeuronNetwork.Teach();
 
             Era_TextBox.Text = $"LAST\nERA:\n{errors.Length - 1}";
@@ -138,46 +133,6 @@ namespace NeuronNetwork_CharLearning
             {
                 MinValue = 0
             });
-        }
-
-        private void ReadData()
-        {
-            InputsDatas.Clear();
-            var path = $@"{AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", "")}Data\data.txt";
-
-            using StreamReader file = new StreamReader(path);
-            PopulateInputsDatas(file);
-        }
-
-        private void PopulateInputsDatas(StreamReader file)
-        {
-            string ln;
-            var biggusDicus = new Dictionary<char, int[]>();
-            NumOfDistinctLabels = 0;
-
-            while ((ln = file.ReadLine()) != null)
-            {
-                AddDataToInputsDatas(biggusDicus, ln);
-            }
-        }
-
-        private void AddDataToInputsDatas(Dictionary<char, int[]> biggusDicus, string ln)
-        {
-            char label = ln[ln.Length - 1];
-            double[] xVector = Regex.Replace(ln, @",.", "").Select(c => (double)(c - '0')).ToArray();
-
-            if (biggusDicus.ContainsKey(label))
-            {
-                InputsDatas.Add(new InputData(xVector, label, biggusDicus[label]));
-            }
-            else
-            {
-                int[] dArr = new int[NeuronNetwork.MaxOutputNeurons];
-                dArr[NumOfDistinctLabels] = 1;
-                NumOfDistinctLabels++;
-                biggusDicus.Add(label, dArr);
-                InputsDatas.Add(new InputData(xVector, label, dArr));
-            }
         }
 
         private void UserCharsDrawingBtn_Click(object sender, RoutedEventArgs e)
