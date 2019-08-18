@@ -1,4 +1,5 @@
 ﻿using NAI_uczenie.Models;
+using NAI_uczenie.Tools;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,10 +37,12 @@ namespace NeuronNetwork_CharLearning.Models
             for (; eraIt <= maxEra; eraIt++)
             {
                 TeachEra(eraIt);
-                AdditionalStaff.ChangeListOrder(InputsDatas);
+                InputsDatas.ChangeOrder();
 
                 if (EraErrors[eraIt] < ErrorThreshold)
+                {
                     break;
+                }
             }
 
             double[] EraErrorsShortened = new double[eraIt];
@@ -54,7 +57,7 @@ namespace NeuronNetwork_CharLearning.Models
             {
                 CalcInY_Vector(inputData);
                 CalcOutY_VectorAndErrors(inputData, eraIt);
-                TeachInNeurons_CalcEpsilon(inputData, eraIt);
+                TeachInNeurons_CalcEpsilon(inputData);
                 TeachOutNeurons();
             }
         }
@@ -106,7 +109,7 @@ namespace NeuronNetwork_CharLearning.Models
             }
         }
 
-        private void TeachInNeurons_CalcEpsilon(InputData currInputData, int eraIt)
+        private void TeachInNeurons_CalcEpsilon(InputData currInputData)
         {
             int inNeurIt = 0;
             foreach (var inNeur in InNeurons)
@@ -122,7 +125,7 @@ namespace NeuronNetwork_CharLearning.Models
             inNeur.Epsilon = 0.0;
             foreach (var outNeur in OutNeurons)
             {
-                inNeur.Epsilon += outNeur.Wage_Vector[inNeurIt] * outNeur.Epsilon;
+                inNeur.Epsilon += outNeur[inNeurIt] * outNeur.Epsilon;
             }
 
             inNeur.Epsilon *= Fun.CalcDerivative(inNeur.Y, lambda);
@@ -137,27 +140,27 @@ namespace NeuronNetwork_CharLearning.Models
                 double y = outNeur.Y;
                 double D_Y_diff = currInputData.D_Vector[outNeurIt] - y;
                 outNeur.Epsilon = D_Y_diff * Fun.CalcDerivative(y, lambda);
-                EraErrors[eraIt] += D_Y_diff * D_Y_diff;
+                EraErrors[eraIt] += Math.Pow(D_Y_diff, 2);
                 outNeurIt++;
             }
         }
 
-        private void TeachInNeuron(Neuron neur, InputData inputData)
+        private void TeachInNeuron(Neuron inNeur, InputData inputData)
         {
-            for (int i = 0; i < neur.Wage_Vector.Count(); i++)
+            for (int i = 0; i < inNeur.Wage_Vector.Count(); i++)
             {
-                neur.Wage_Vector[i] += alfa * neur.Epsilon * inputData.X_Vector[i];
+                inNeur[i] += alfa * inNeur.Epsilon * inputData[i];
             }
-            neur.Theta += alfa * neur.Epsilon;
+            inNeur.Theta += alfa * inNeur.Epsilon;
         }
 
-        private void TeachOutNeuron(Neuron neur, List<Neuron> neurons)
+        private void TeachOutNeuron(Neuron outNeur, List<Neuron> neurons)
         {
-            for (int i = 0; i < neur.Wage_Vector.Count(); i++)
+            for (int i = 0; i < outNeur.Wage_Vector.Count(); i++)
             {
-                neur.Wage_Vector[i] += alfa * neur.Epsilon * neurons[i].Y;
+                outNeur[i] += alfa * outNeur.Epsilon * neurons[i].Y;
             }
-            neur.Theta += alfa * neur.Epsilon;
+            outNeur.Theta += alfa * outNeur.Epsilon;
         }
 
         private void CalcInY_Vector(InputData currInputData)
@@ -184,13 +187,15 @@ namespace NeuronNetwork_CharLearning.Models
             }
         }
 
-        private double CalcInY(Neuron neur, double[] x_Vector)
+        private double CalcInY(Neuron inNeur, double[] x_Vector)
         {
             double net = 0.0;
             for (int i = 0; i < x_Vector.Length; i++)
-                net += neur.Wage_Vector[i] * x_Vector[i];
+            {
+                net += inNeur[i] * x_Vector[i];
+            }
 
-            net += neur.Theta;
+            net += inNeur.Theta;
 
             return Fun.Calc(net, lambda);
         }
@@ -199,7 +204,9 @@ namespace NeuronNetwork_CharLearning.Models
         {
             double net = 0.0;
             for (int i = 0; i < inNeurons.Count; i++)
-                net += outNeur.Wage_Vector[i] * inNeurons[i].Y;
+            {
+                net += outNeur[i] * inNeurons[i].Y;
+            }
 
             net += outNeur.Theta;
 

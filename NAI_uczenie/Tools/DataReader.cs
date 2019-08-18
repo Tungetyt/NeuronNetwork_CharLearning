@@ -33,12 +33,12 @@ namespace NAI_uczenie.Tools
         public void PopulateInputsDatas(StreamReader file)
         {
             string ln;
-            var biggusDicus = new Dictionary<char, int[]>();
+            var bigusDicus = new Dictionary<char, int[]>();
             NumOfDistinctLabels = 0;
 
             while ((ln = file.ReadLine()) != null)
             {
-                AddDataToInputsDatas(biggusDicus, ln);
+                AddDataToInputsDatas(bigusDicus, ln);
             }
         }
 

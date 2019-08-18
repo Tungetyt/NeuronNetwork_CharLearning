@@ -1,11 +1,8 @@
-﻿using LiveCharts;
-using LiveCharts.Defaults;
-using LiveCharts.Wpf;
+﻿using NAI_uczenie;
 using NAI_uczenie.Tools;
 using NeuronNetwork_CharLearning.Models;
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,6 +22,7 @@ namespace NeuronNetwork_CharLearning
         private double[] X_GUI_Vector { get; set; }
 
         private readonly DoubleAnimation animation = new DoubleAnimation();
+        private MyChart chart;
 
         public MainWindow()
         {
@@ -34,9 +32,7 @@ namespace NeuronNetwork_CharLearning
 
             int coliumnSize = 4;
             int rowsSize = 6;
-
             X_GUI_Vector = new double[coliumnSize * rowsSize];
-
             GenerateButtons(coliumnSize, rowsSize);
         }
 
@@ -51,7 +47,7 @@ namespace NeuronNetwork_CharLearning
             Era_TextBox.Text = $"LAST\nERA:\n{errors.Length - 1}";
             LastError_TextBox.Text = $"LAST\nERROR:\n{Math.Round(errors[errors.Length - 1], 2)}";
 
-            InputChartData(errors);
+            chart.InputData(errors);
         }
 
         private void Check_Btn_Click(object sender, RoutedEventArgs e)
@@ -62,47 +58,19 @@ namespace NeuronNetwork_CharLearning
 
         private void GenerateButtons(int coliumnSize, int rowsSize)
         {
-            for (int i = 0, counter = 0; i < rowsSize; i++)
+            for (int i = 0; i < rowsSize; i++)
             {
                 for (int j = 0; j < coliumnSize; j++)
                 {
                     var btn = new Button();
                     btn.Click += UserCharsDrawingBtn_Click;
-                    btn.Name = "b" + counter;
+                    btn.Name = $"b{j + i * coliumnSize}";
                     btn.Background = Brushes.White;
                     Grid.SetColumn(btn, j);
                     Grid.SetRow(btn, i);
                     userCharsDrawingGrid.Children.Add(btn);
-
-                    counter++;
                 }
             }
-        }
-
-        private void InputChartData(double[] errors)
-        {
-            Chart.Series = new SeriesCollection
-            {
-                new LineSeries
-                {
-                    Values = GetPoints(errors)
-                }
-            };
-        }
-
-        private ChartValues<ObservablePoint> GetPoints(double[] errors)
-        {
-            var points = new ChartValues<ObservablePoint>();
-            for (int i = 1; i < errors.Count(); i++)
-            {
-                points.Add(new ObservablePoint
-                {
-                    X = i,
-                    Y = errors[i]
-                });
-            }
-
-            return points;
         }
 
         private void PrepareAnimation()
@@ -116,23 +84,9 @@ namespace NeuronNetwork_CharLearning
 
         private void PrepareControls()
         {
-            Chars_ListBox.ItemsSource = InputsDatas;
-            Result_TextBox.IsReadOnly = true;
-            Era_TextBox.IsReadOnly = true;
-            LastError_TextBox.IsReadOnly = true;
-            learn_Btn.IsEnabled = true;
             learn_Btn.Focus();
-            PrepareChart();
+            chart = new MyChart(Chart);
             PrepareAnimation();
-        }
-
-        private void PrepareChart()
-        {
-            Chart.AxisY.Clear();
-            Chart.AxisY.Add(new Axis
-            {
-                MinValue = 0
-            });
         }
 
         private void UserCharsDrawingBtn_Click(object sender, RoutedEventArgs e)
@@ -144,7 +98,7 @@ namespace NeuronNetwork_CharLearning
                 X_GUI_Vector[position] = 1;
                 btn.Background = Brushes.Blue;
             }
-            else if (X_GUI_Vector[position] == 1)
+            else
             {
                 X_GUI_Vector[position] = 0;
                 btn.Background = Brushes.White;

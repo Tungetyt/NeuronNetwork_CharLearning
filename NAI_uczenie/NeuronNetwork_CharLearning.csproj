@@ -63,7 +63,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="View\MyChart.cs" />
     <Compile Include="Tools\DataReader.cs" />
+    <Compile Include="Tools\ExtensionMethods.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -78,7 +80,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tools\AdditionalStaff.cs" />
+    <Compile Include="Tools\Tools.cs" />
     <Compile Include="Functions\IFunction.cs" />
     <Compile Include="Model\InputData.cs" />
     <Compile Include="Controller\Neuron.cs" />

@@ -13,6 +13,18 @@
             Randomise();
         }
 
+        public double this[int index]
+        {
+            get
+            {
+                return Wage_Vector[index];
+            }
+            set
+            {
+                Wage_Vector[index] = value;
+            }
+        }
+
         private void Randomise()
         {
             var min = -0.9;
@@ -20,9 +32,9 @@
 
             for (var wageIt = 0; wageIt < Wage_Vector.Length; wageIt++)
             {
-                Wage_Vector[wageIt] = AdditionalStaff.GetRandomDouble(min, max);
+                Wage_Vector[wageIt] = Tools.GetRandomDouble(min, max);
             }
-            Theta = AdditionalStaff.GetRandomDouble(min, max);
+            Theta = Tools.GetRandomDouble(min, max);
         }
     }
 }
