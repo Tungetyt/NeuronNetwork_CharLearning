@@ -19,7 +19,7 @@ namespace NAI_uczenie
             });
         }
 
-        public void InputData(double[] errors)
+        public MyChart InputData(double[] errors)
         {
             chart.Series = new SeriesCollection
             {
@@ -28,6 +28,8 @@ namespace NAI_uczenie
                     Values = GetPoints(errors)
                 }
             };
+
+            return this;
         }
 
         private ChartValues<ObservablePoint> GetPoints(double[] errors)

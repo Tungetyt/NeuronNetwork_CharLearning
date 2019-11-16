@@ -3,6 +3,7 @@ using NAI_uczenie.Tools;
 using NeuronNetwork_CharLearning.Models;
 using System;
 using System.Collections.ObjectModel;
+using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,8 +53,21 @@ namespace NeuronNetwork_CharLearning
 
         private void Check_Btn_Click(object sender, RoutedEventArgs e)
         {
-            Result_TextBox.Text = $"{NeuronNetwork.Test(X_GUI_Vector)}";
+            char foundChar = NeuronNetwork.Test(X_GUI_Vector);
+            Result_TextBox.Text = $"{foundChar}";
             Result_TextBox.BeginAnimation(TextBox.FontSizeProperty, animation);
+
+            SpeechSynthesizer synth = new SpeechSynthesizer();
+            synth.SetOutputToDefaultAudioDevice();
+            if(foundChar == default(Char))
+            {
+                synth.SpeakAsync($"Found nothing");
+            }
+            else
+            {
+                synth.SpeakAsync($"Found {foundChar}");
+            }
+            
         }
 
         private void GenerateButtons(int coliumnSize, int rowsSize)

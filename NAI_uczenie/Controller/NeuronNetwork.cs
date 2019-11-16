@@ -87,7 +87,7 @@ namespace NeuronNetwork_CharLearning.Models
                 }
             }
 
-            return ' ';
+            return default;
         }
 
         private List<Neuron> CreateNeurons(int maxNeurons, int numOfWages)
