@@ -64,9 +64,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Description.xaml.cs">
+      <DependentUpon>Description.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MyChart.cs" />
     <Compile Include="Tools\DataReader.cs" />
     <Compile Include="Tools\ExtensionMethods.cs" />
+    <Page Include="Description.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -117,6 +124,8 @@
   <ItemGroup>
     <None Include="Data\data.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="README.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

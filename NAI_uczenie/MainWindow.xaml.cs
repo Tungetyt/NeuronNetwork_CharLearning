@@ -59,7 +59,7 @@ namespace NeuronNetwork_CharLearning
 
             SpeechSynthesizer synth = new SpeechSynthesizer();
             synth.SetOutputToDefaultAudioDevice();
-            if(foundChar == default(Char))
+            if (foundChar == default(Char))
             {
                 synth.SpeakAsync($"Found nothing");
             }
@@ -67,7 +67,6 @@ namespace NeuronNetwork_CharLearning
             {
                 synth.SpeakAsync($"Found {foundChar}");
             }
-            
         }
 
         private void GenerateButtons(int coliumnSize, int rowsSize)
@@ -118,6 +117,11 @@ namespace NeuronNetwork_CharLearning
                 btn.Background = Brushes.White;
             }
             check_Btn.Focus();
+        }
+
+        private void Description_Button_Click(object sender, RoutedEventArgs e)
+        {
+            new Description().Show();
         }
     }
 }

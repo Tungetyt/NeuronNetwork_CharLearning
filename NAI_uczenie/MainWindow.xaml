@@ -6,39 +6,41 @@
         xmlns:local="clr-namespace:NeuronNetwork_CharLearning"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="CharLerning" Height="auto" Width="auto">
-  <Grid Name="userCharsDrawingGrid" Margin="5">
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="40" />
-      <ColumnDefinition Width="40" />
-      <ColumnDefinition Width="40" />
-      <ColumnDefinition Width="40" />
-      <ColumnDefinition Width="*" />
-    </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="40" />
-      <RowDefinition Height="40" />
-      <RowDefinition Height="40" />
-      <RowDefinition Height="40" />
-      <RowDefinition Height="40" />
-      <RowDefinition Height="40" />
-      <RowDefinition Height="40" />
-      <RowDefinition Height="70" />
-      <RowDefinition Height="70" />
-      <RowDefinition Height="*" />
-    </Grid.RowDefinitions>
-    <Button Name="learn_Btn" IsDefault="True" IsEnabled="True" Grid.Row="6" Grid.Column="0" Click="Learn_Btn_Click">learn</Button>
-    <Button Name="check_Btn" IsDefault="False" IsEnabled="False" Grid.Row="6" Grid.Column="1" Click="Check_Btn_Click">check</Button>
-    <TextBox Grid.Row="7" IsReadOnly="True" x:Name="Result_TextBox" Foreground="Blue" FontWeight="Bold" Margin="5" Grid.ColumnSpan="2" TextAlignment="Center" />
-    <TextBox Grid.Row="8"  IsReadOnly="True" x:Name="Era_TextBox" Margin="5" Padding="3" Grid.ColumnSpan="2" />
-    <TextBox Grid.Row="9"  IsReadOnly="True" x:Name="LastError_TextBox" Margin="5" Padding="3" Grid.ColumnSpan="2" />
-    <ListBox Grid.Row="6" ItemsSource="{Binding InputsDatas}" x:Name="Chars_ListBox" Margin="5" Grid.ColumnSpan="2" Grid.Column="2" Grid.RowSpan="4">
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <TextBlock Text="{Binding Label}" />
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
-    <lvc:CartesianChart x:Name="Chart" Series="{Binding SeriesCollection}" Grid.Column="5" Grid.RowSpan="10" />
-  </Grid>
+        Title="CharLerning" Height="1000" Width="auto">
+    <Grid Name="userCharsDrawingGrid" Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="70" />
+            <RowDefinition Height="70" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Button Name="learn_Btn" IsDefault="True" Margin="3" IsEnabled="True" Grid.Row="6" Grid.Column="0" Click="Learn_Btn_Click">learn</Button>
+        <Button Name="check_Btn" IsDefault="False" Margin="3" IsEnabled="False" Grid.Row="6" Grid.Column="1" Click="Check_Btn_Click">check</Button>
+        <Button Click="Description_Button_Click" Margin="5" Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="2">Info</Button>
+        <TextBox Grid.Row="7" IsReadOnly="True" x:Name="Result_TextBox" Foreground="Blue" FontWeight="Bold" Margin="5" Grid.ColumnSpan="2" TextAlignment="Center" />
+        <TextBox Grid.Row="8"  IsReadOnly="True" x:Name="Era_TextBox" Margin="5" Padding="3" Grid.ColumnSpan="2" />
+        <TextBox Grid.Row="9"  IsReadOnly="True" x:Name="LastError_TextBox" Margin="5" Padding="3" Grid.ColumnSpan="2" />
+
+        <ListBox Grid.Row="7" ItemsSource="{Binding InputsDatas}" x:Name="Chars_ListBox" Margin="5" Grid.ColumnSpan="2" Grid.Column="2" Grid.RowSpan="3">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Label}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <lvc:CartesianChart x:Name="Chart" Series="{Binding SeriesCollection}" Grid.Column="5" Grid.RowSpan="11" />
+    </Grid>
 </Window>
