@@ -1,0 +1,14 @@
+GUI application powered by WPF. 
+
+The application contains neuron network created with the smallest amount of perceptrons possible to learn characters from provided txt file. 
+Due to this limitation results aren’t necessary that spectacular. 
+
+You may need to run the application twice to start it up. This issue appears due to external packages that must be downloaded via NuGet in Visual Studio. 
+The downloading process starts automaticly after initial program start.
+Published project doesn’t have this “feature”, since the packages are already installed in it.
+
+How to use the application:
+1.	Click “learn” button to teach the network provided data from txt file.
+2.	Click buttons on the grid to “draw” a number (from 0 – 9). It must be a number from 0 – 9, because those number are provided in “data” txt file. 
+    You may want to change the file to include other characters.
+3.	Click “check” button to check if neuron network recognized any character.
