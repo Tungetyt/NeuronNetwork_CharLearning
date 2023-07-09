@@ -1,7 +1,6 @@
 GUI application powered by WPF. 
 
 The application contains neuron network created with the smallest amount of perceptrons possible to learn characters from provided txt file. 
-Due to this limitation results aren’t necessary that spectacular. 
 
 You may need to run the application twice to start it up. This issue appears due to external packages that must be downloaded via NuGet in Visual Studio. 
 The downloading process starts automaticly after initial program start.
